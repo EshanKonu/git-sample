@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_translation_term_tree" model="ir.ui.view">
+        <field name="name">translation.term.tree</field>
+        <field name="model">translation.term</field>
+        <field name="arch" type="xml">
+            <list name="Translation items" editable="bottom" create="false">
+                <field name="name" required="1"/>
+                <field name="model_id" required="1" invisible="1" readonly="1"/>
+                 <field name="field_id" readonly="1" required="1" invisible="1"/>
+                <field name="original" readonly="1"/>
+                <field name="lang_id" readonly="1"/>
+                <field name="value"/>
+                <field name="old_value" invisible="1"/>
+                <field name="res_id" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_translation_term_form" model="ir.ui.view">
+        <field name="name">translation.term.form</field>
+        <field name="model">translation.term</field>
+        <field name="arch" type="xml">
+            <form string="Translation Item">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="model_id" required="1"/>
+                            <field name="field_id"/>
+                            <field name="value"/>
+                            <field name="res_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_translation_term" model="ir.actions.act_window">
+        <field name="name">Translation Term</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">translation.term</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            No translation has been created.
+            </p>
+        </field>
+    </record>
+</odoo>

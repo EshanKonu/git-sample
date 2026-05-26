@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="drbb_inventory_view_picking_type_form" model="ir.ui.view">
+        <field name="name">drbb.inventory.view.picking.type.form</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock.view_picking_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='move_type']" position="after">
+                <field name="role_id" options="{'no_create':True}"/>
+                <field name="scheduled_day"/>
+            </xpath>
+            <field name="code" position="after">
+                <field name="pick_pack_ship"/>
+            </field>
+            <field name="show_entire_packs" position="after">
+                <field name="force_destination_package"/>
+                <field name="respect_minimum_stock_for_online"/>
+                <field name="prevent_wave_addition_user"/>
+            </field>
+            <field name="create_backorder" position="after">
+                <field name="filter_by_zone"/>
+            </field>
+            <field name="barcode" position="after">
+                <field name="hide_header_footer_in_barcode"/>
+                <field name="warn_assigned_user_in_barcode"/>
+            </field>
+            <xpath expr="//div[@name='wave_location']" position="after">
+                <span invisible="not auto_batch" groups="stock.group_stock_multi_locations"/>
+                <div name="wave_location_group" class="o_row" invisible="not auto_batch"
+                     groups="stock.group_stock_multi_locations">
+                    <field name="wave_group_by_location_group"/>
+                    <label for="wave_group_by_location_group"/>
+                    <field name="wave_location_group_ids" widget="many2many_tags"
+                           placeholder="Select location groups you want to group"
+                           invisible="not wave_group_by_location_group"
+                           required="wave_group_by_location_group"
+                           options="{'no_create': True}"
+                    />
+                </div>
+                <span invisible="not auto_batch" groups="stock.group_stock_multi_locations"/>
+                <div name="wave_group_by_package" class="o_row" invisible="not auto_batch"
+                     groups="stock.group_stock_multi_locations">
+                    <field name="wave_group_by_package"/>
+                    <label for="wave_group_by_package"/>
+                </div>
+            </xpath>
+
+            <xpath expr="//group[@name='restrict_scan_settings']/.." position="inside">
+                <group string="Cousin Location Scan">
+                    <div class="alert alert-warning" role="alert" colspan="2">
+                        Activating this option lets you scan cousin locations in the barcode app.
+                        <div>
+                            <ul>
+                                <li>Parent location: DC/Stock
+                                    <ul>
+                                        <li>Child branch A: DC/Stock/Reserve</li>
+                                        <li>Child branch B: DC/Stock/Circuit</li>
+                                    </ul>
+                                </li>
+                                <li>(System auto-selects DC/Stock/Reserve as destination. (see route DC receive in 2 steps, the push rule to reserve has a domain))</li>
+                                <li>User scans WH/Stock/Circuit/location02 -&gt; system accepts it</li>
+                            </ul>
+                        </div>
+                      </div>
+                    <field name="bc_cousin_loc_scan" widget="boolean_toggle"/>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="drbb_inventory_view_picking_type_form_inherit" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.picking.type.form.inherit</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock_picking_batch.view_picking_type_form_inherit"/>
+        <field name="arch" type="xml">
+            <field name="batch_auto_confirm" position="before">
+                <div class="col-4"/>
+                <div class="col-3">
+                    <span invisible="not auto_batch"/>
+                    <div class="o_row" name="batch_max_volume" invisible="not auto_batch">
+                        <field name="batch_max_volume"/>
+                        <span class="w-25">
+                            <field name="volume_uom_name"/>
+                        </span>
+                    </div>
+                </div>
+            </field>
+        </field>
+    </record>
+
+    <record id="drbb_inventory_stock_barcode_view_picking_type_form" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.barcode.view.picking.type.form</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock_barcode.stock_barcode_view_picking_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='restrict_put_in_pack']" position="after">
+                <field name="restrict_split_batch" string="Split Batch"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

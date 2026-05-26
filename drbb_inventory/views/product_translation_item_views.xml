@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_translation_item_tree" model="ir.ui.view">
+        <field name="name">product.translation.item.tree</field>
+        <field name="model">product.translation.item</field>
+        <field name="arch" type="xml">
+            <list name="Translation items">
+                <field name="product_translation_id" required="1"/>
+                <field name="language_id" required="1"/>
+                <field name="value"/>
+                <field name="model_id" options="{'no_create': True, 'no_edit': True}"/>
+                <field name="product_attrib_id"/>
+                <field name="product_attrib_val_id"/>
+                <field name="website_category_id"/>
+                <field name="pos_category_id"/>
+                <field name="sale_desc"/>
+                <field name="web_desc"/>
+                <field name="stock_out_msg"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_translation_item_form" model="ir.ui.view">
+        <field name="name">product.translation.item.form</field>
+        <field name="model">product.translation.item</field>
+        <field name="arch" type="xml">
+            <form string="Translation Item">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_translation_id" required="1"/>
+                            <field name="language_id" required="1"/>
+                            <field name="product_attrib_id"/>
+                            <field name="product_attrib_val_id"/>
+                            <field name="website_category_id"/>
+                            <field name="pos_category_id"/>
+                        </group>
+                        <group>
+                            <field name="model_id" options="{'no_create': True, 'no_edit': True}"/>
+                            <field name="value"/>
+                            <field name="sale_desc"/>
+                            <field name="web_desc"/>
+                            <field name="stock_out_msg"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_translation_line_filter" model="ir.ui.view">
+        <field name="name">translation.line.select</field>
+        <field name="model">product.translation.item</field>
+        <field name="arch" type="xml">
+            <search string="Search Translations">
+                <field name="product_translation_id"/>
+                <field name="language_id" string="Language"/>
+                <field name="model_id" string="Models"/>
+                <group expand="0" string="Group By">
+                    <filter string="Product" name="translation" domain="[]" context="{'group_by': 'product_translation_id'}"/>
+                    <filter name="lang" string="Language" domain="[]" context="{'group_by': 'language_id'}"/>
+                    <filter name="model" string="Models" domain="[]" context="{'group_by': 'model_id'}"/>
+                </group>
+           </search>
+        </field>
+    </record>
+
+    <record id="action_translation_item" model="ir.actions.act_window">
+        <field name="name">Translation items</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.translation.item</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_translation_line_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            No translation has been created.
+            </p>
+        </field>
+    </record>
+</odoo>

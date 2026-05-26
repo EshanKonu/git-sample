@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="stock_warehouse_view_map" model="ir.ui.view">
+        <field name="name">stock.warehouse.view.map</field>
+        <field name="model">stock.warehouse</field>
+        <field name="arch" type="xml">
+            <map res_partner="partner_id"/>
+        </field>
+    </record>
+    <record id="stock_warehouse_action_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="stock.view_warehouse_tree"/>
+        <field name="act_window_id" ref="stock.action_warehouse_form"/>
+    </record>
+    <record id="stock_warehouse_action_view_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="stock.view_warehouse"/>
+        <field name="act_window_id" ref="stock.action_warehouse_form"/>
+    </record>
+    <record id="stock_warehouse_action_view_map" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">map</field>
+        <field name="view_id" ref="stock_warehouse_view_map"/>
+        <field name="act_window_id" ref="stock.action_warehouse_form"/>
+    </record>
+
+    <record id="drbb_inventory_view_warehouse" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.warehouse</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="is_dc_warehouse" groups="base.group_no_one"/>
+                <field name="is_xxl_warehouse" groups="base.group_no_one"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

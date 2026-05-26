@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="stock_barcode.KanbanRenderer" t-inherit-mode="extension" t-translation="off">
+        <xpath expr="//li[hasclass('o_regular_picking nav-item flex-basis-50 text-nowrap text-center')]" position="attributes">
+            <attribute name="style">display:none</attribute>
+        </xpath>
+        <xpath expr="//li[hasclass('o_batch_picking nav-item flex-basis-50 text-nowrap text-center')]" position="after">
+            <li class="o_regular_picking nav-item flex-basis-50 text-nowrap text-center">
+                <a class="nav-link fs-4" href="#" t-on-click="displayPickings"
+                   t-att-class="resModel == 'stock.picking' ? 'active fw-bold' : ''"
+                   t-attf-aria-current="{{resModel == 'stock.picking' &amp;&amp; 'page'}}">
+                    Transfers
+                    <span t-if="resModel != 'stock.picking'" t-out="otherRecordsCount"
+                          class="ms-2 badge rounded-pill text-bg-500"/>
+                </a>
+            </li>
+        </xpath>
+    </t>
+</templates>
+

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="drbb_inventory_planning_view_form" model="ir.ui.view">
+        <field name="name">drbb.inventory.planning.slot.form</field>
+        <field name="model">planning.slot</field>
+        <field name="inherit_id" ref="planning.planning_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='resource_id']" position="after">
+                <field name="drbb_stock_picking_batch_id"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
