@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="base_model_language_form">
+        <field name="name">base.model.language.form</field>
+        <field name="model">base.model.language</field>
+        <field name="arch" type="xml">
+            <form string="Generate Word">
+                <group>
+                    <group>
+                        <field name="model_id"/>
+                    </group>
+                    <group>
+                        <field name="field_ids" widget="many2many_tags"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Generate"
+                        name="action_generate" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_model_language_form" model="ir.actions.act_window">
+        <field name="name">Generate Word</field>
+        <field name="res_model">base.model.language</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

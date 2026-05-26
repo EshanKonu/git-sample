@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="drbb_inventory_stock_move_view_list" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.move.view.list</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <list string="Picking Lines" create="0" edit="0" delete="0" default_order="picking_weight">
+                <field name="date" groups="base.group_no_one" decoration-danger="(state not in ('cancel','done')) and date &gt; current_date"/>
+                <field name="reference"/>
+                <field name="picking_type_id" column_invisible="True"/>
+                <field name="location_usage" column_invisible="True"/>
+                <field name="location_dest_usage" column_invisible="True"/>
+                <field name="product_id" readonly="state == 'done'"/>
+                <field name="location_id" options="{'no_create': True}" string="From" decoration-muted="location_usage not in ('internal','transit')"/>
+                <field name="location_dest_id" options="{'no_create': True}" string="To" decoration-muted="location_dest_usage not in ('internal','transit')"/>
+                <field name="product_packaging_id" groups="product.group_stock_packaging" optional="hide" context="{'default_product_id': product_id}" readonly="not product_id"/>
+                <field name="product_uom_qty" sum="Total Demand" readonly="state == 'done'"/>
+                <field name="quantity" string="Quantity" sum="Total Quantity" decoration-danger="(location_usage in ('internal','transit')) and (location_dest_usage not in ('internal','transit'))" decoration-success="(location_usage not in ('internal','transit')) and (location_dest_usage in ('internal','transit'))"/>
+                <field name="product_uom" options="{'no_open': True, 'no_create': True}" string="Unit" groups="uom.group_uom"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state" widget="badge" optional="show" decoration-danger="state=='cancel'" decoration-info="state== 'assigned'" decoration-muted="state == 'draft'" decoration-success="state == 'done'" decoration-warning="state not in ('draft','cancel','done','assigned')"/>
+                <field name="picking_weight" sum="Total Picking Prio Weight"/>
+                <field name="picking_time" sum="Total Picking Time"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="drbb_inventory_view_picking_move_tree_inherited" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock_picking_batch.picking.move.tree</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock_picking_batch.view_picking_move_tree_inherited"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="default_order">picking_weight</attribute>
+            </xpath>
+            <xpath expr="//field[@name='picked']" position="after">
+                <field name="picking_weight"/>
+                <field name="picking_time" widget="float_time"/>
+                <field name="picking_time_location" widget="float_time"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_drbb_inventory_stock_move" model="ir.actions.act_window">
+        <field name="name">Picking Lines</field>
+        <field name="res_model">stock.move</field>
+        <field name="view_mode">list</field>
+        <field name="view_ids"
+               eval="[(5, 0, 0), (0, 0, {'view_mode': 'list', 'view_id': ref('drbb_inventory_stock_move_view_list')})]"
+        />
+    </record>
+</odoo>

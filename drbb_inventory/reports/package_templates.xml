@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="drbb_inventory_label_package_template_view" inherit_id="stock.label_package_template_view">
+            <xpath expr="//t[@t-translation='off']" position="replace">
+                <t t-translation="off">
+                    <t t-set="inventory_section" t-value=""/>
+                    <t t-set="package_name" t-value="package.name"/>
+                    <t t-set="product_default_code" t-value=""/>
+                    <t t-set="product_name" t-value=""/>
+                    <t t-set="quantity" t-value="0"/>
+                    <t t-set="create_date" t-value="package.create_date"/>
+                    <t t-if="len(package.quant_ids) == 1">
+                        <t t-set="quant" t-value="package.quant_ids[0]"/>
+                        <t t-set="inventory_section" t-value="quant.product_id.drbb_product_inventory_section_id.name"/>
+                        <t t-set="product_default_code" t-value="quant.product_id.default_code"/>
+                        <t t-set="product_name" t-value="str(quant.product_id.name)[:35]"/>
+                        <t t-set="quantity" t-value="quant.quantity"/>
+                    </t>
+                    <t t-elif="len(package.quant_ids) &gt; 1">
+                        <t t-set="inventory_section" t-value=""/>
+                        <t t-set="product_default_code" t-value="'MIXED'"/>
+                        <t t-set="quantity" t-value="sum(package.quant_ids.mapped('quantity'))"/>
+                    </t>
+                    <t t-else="">
+                        <t t-if="len(package.move_line_ids) == 1">
+                            <t t-set="move_line" t-value="package.move_line_ids[0]"/>
+                            <t t-set="inventory_section" t-value="move_line.product_id.drbb_product_inventory_section_id.name"/>
+                            <t t-set="product_default_code" t-value="move_line.product_id.default_code"/>
+                            <t t-set="product_name" t-value="str(move_line.product_id.name)[:35]"/>
+                            <t t-set="quantity" t-value="move_line.qty_done"/>
+                        </t>
+                        <t t-elif="len(package.move_line_ids) &gt; 1">
+                            <t t-set="inventory_section" t-value=""/>
+                            <t t-set="product_default_code" t-value="'MIXED'"/>
+                            <t t-set="quantity" t-value="sum(package.move_line_ids.mapped('qty_done'))"/>
+                        </t>
+                    </t>
+                    ^XA
+                    ^PW1218
+                    ^LL812
+                    ^CI28
+                    ^FWB
+                    ^CF0,30
+
+                    ^FO-30,30^GB150,150,3^FS
+                    ^FO-70,55^A0B,60,60^FB100,1,0,C^FD<t t-out="inventory_section"/> ^FS
+
+
+                    ^FO-200,359^BY3
+                    ^BCB,150,Y,N,N
+                    ^FD<t t-out="package_name"/>^FS
+
+                    ^FO-450,359^A0B,100,100^FB600,1,0,C^FD<t t-out="product_default_code"/>^FS
+
+                    ^FO-600,359^A0B,30,30^FB600,1,0,C^FD<t t-out="product_name"/>^FS
+
+                    ^FO-700,850^A0B,60,60^FD<t t-out="quantity"/> Stuks^FS
+
+
+                    ^FO-30,850^A0B,30,30^FB300,1,0,R^FDCreated on: <t t-out="create_date" t-options="{'widget': 'date'}"/>^FS
+
+                    ^XZ
+                </t>
+            </xpath>
+        </template>
+    </data>
+</odoo>

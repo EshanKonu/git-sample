@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="drbb_inventory.MissingMovesDialog">
+        <Dialog title.translate="Missing Moves" size="'md'" fullscreen="false" contentClass="'o_barcode_missing_moves_dialog'">
+            <div class="container">
+                <div class="text-muted mb-4">
+                    Some product lines were modified in the backend during this picking. If you continue, the transfer will be validated without these changes.
+                </div>
+                <div class="o_barcode_missing_moves_column_titles row mb-2 pb-3 border-bottom text-capitalize">
+                    <div class="col-2 text-center">ID</div>
+                    <div class="col-8 text-center pe-0">Product</div>
+                    <div class="col-2 ps-1">Quantity</div>
+                </div>
+                <t t-foreach="props.missingMoves" t-as="move" t-key="move.id">
+                    <t t-set="colorClass" t-value="move.qty_done ? 'text-warning' : 'text-danger'"/>
+                    <div class="o_barcode_missing_moves_product_row row mb-1">
+                        <div class="col-2 text-center" name="id" t-esc="move.id"/>
+                        <div class="col-8 text-center pe-0" name="product" t-esc="move.product_id.display_name"/>
+                        <div class="col-2 ps-1" name="qty" t-esc="move.qty_done"/>
+                    </div>
+                </t>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-on-click.prevent="_onApply">Validate</button>
+                <button class="btn btn-secondary" t-on-click="props.close">Stay on transfer</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>
