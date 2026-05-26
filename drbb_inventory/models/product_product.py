@@ -9,6 +9,16 @@ class ProductProduct(models.Model):
     item_status_char = fields.Char(related='item_status_id.name', store=True, string="Item Status Char")
     recommended_retail_price = fields.Monetary(string="RRP", help="This field contains the recommended retail price (RRP)")
     current_pricelist_price = fields.Monetary(string="Current Pricelist Price", compute="_current_pricelist_price")
+    drbb_other_color_variant_ids = fields.One2many(
+        "drbb.product.other.color.variant",
+        "product_id",
+        string="Other Colors",
+    )
+    drbb_cross_sell_variant_ids = fields.One2many(
+        "drbb.product.cross.sell.variant",
+        "product_id",
+        string="Cross-sell",
+    )
 
     def _current_pricelist_price(self):
         """Computes current pricelist price of the product"""

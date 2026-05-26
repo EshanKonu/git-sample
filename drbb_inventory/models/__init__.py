@@ -23,6 +23,13 @@ from . import drbb_product_item_status
 from . import drbb_product_item_type
 from . import drbb_product_language
 from . import drbb_product_quality_label
+from . import drbb_product_collection
+from . import drbb_product_subcollection
+from . import drbb_product_type
+from . import drbb_product_other_color
+from . import drbb_product_cross_sell
+from . import drbb_product_other_color_variant
+from . import drbb_product_cross_sell_variant
 from . import drbb_location_group
 from . import res_users
 from . import product_translation

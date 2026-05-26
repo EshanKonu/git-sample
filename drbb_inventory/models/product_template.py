@@ -63,6 +63,44 @@ class ProductTemplate(models.Model):
     drbb_product_inventory_section_id = fields.Many2one("drbb.product.inventory.section", string="Inventory Section")
     online_minimum_stock = fields.Float(string="Minimum stock for online")
     current_pricelist_price = fields.Monetary(string="Current Pricelist Price", compute="_current_pricelist_price")
+    drbb_other_color_ids = fields.One2many(
+        "drbb.product.other.color.variant",
+        string="Other Colors",
+        compute="_compute_drbb_other_color_ids",
+        inverse="_set_drbb_other_color_ids",
+    )
+    drbb_cross_sell_ids = fields.One2many(
+        "drbb.product.cross.sell.variant",
+        string="Cross-sell",
+        compute="_compute_drbb_cross_sell_ids",
+        inverse="_set_drbb_cross_sell_ids",
+    )
+
+    @api.depends('product_variant_ids', 'product_variant_ids.drbb_other_color_variant_ids')
+    def _compute_drbb_other_color_ids(self):
+        for template in self:
+            if len(template.product_variant_ids) == 1:
+                template.drbb_other_color_ids = template.product_variant_ids.drbb_other_color_variant_ids
+            else:
+                template.drbb_other_color_ids = False
+
+    def _set_drbb_other_color_ids(self):
+        for template in self:
+            if len(template.product_variant_ids) == 1:
+                template.product_variant_ids.drbb_other_color_variant_ids = template.drbb_other_color_ids
+
+    @api.depends('product_variant_ids', 'product_variant_ids.drbb_cross_sell_variant_ids')
+    def _compute_drbb_cross_sell_ids(self):
+        for template in self:
+            if len(template.product_variant_ids) == 1:
+                template.drbb_cross_sell_ids = template.product_variant_ids.drbb_cross_sell_variant_ids
+            else:
+                template.drbb_cross_sell_ids = False
+
+    def _set_drbb_cross_sell_ids(self):
+        for template in self:
+            if len(template.product_variant_ids) == 1:
+                template.product_variant_ids.drbb_cross_sell_variant_ids = template.drbb_cross_sell_ids
 
     def _current_pricelist_price(self):
         """Computes current pricelist price of the product"""
@@ -184,4 +222,5 @@ class ProductTemplate(models.Model):
         """Compute drbb_promotion_exclude_tag_ids_char seperated by commas"""
         for product_template in self:
             product_template.drbb_promotion_exclude_tag_ids_char = ", ".join(
+                x.name for x in product_template["drbb_promotion_exclude_tag_ids"])
                 x.name for x in product_template["drbb_promotion_exclude_tag_ids"])

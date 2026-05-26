@@ -49,18 +49,41 @@
               name="Product Language"
               parent="menu_drbb_products_settings"
               sequence="6"
+    <menuitem id="menu_drbb_product_type"
+              name="Product Article Group"
+              parent="menu_drbb_products_settings"
+              sequence="6"
+              action="action_drbb_product_type"/>
+
+    <menuitem id="menu_drbb_product_collection"
+              name="Product Collection"
+              parent="menu_drbb_products_settings"
+              sequence="7"
+              action="action_drbb_product_collection"/>
+
+    <menuitem id="menu_drbb_product_subcollection"
+              name="Product Subcollection"
+              parent="menu_drbb_products_settings"
+              sequence="8"
+              action="action_drbb_product_subcollection"/>
+
+    <menuitem id="menu_drbb_product_language"
+              name="Product Language"
+              parent="menu_drbb_products_settings"
+              sequence="9"
               action="action_drbb_product_language"/>
 
     <menuitem id="menu_drbb_promotion_exclude_label"
               name="Promotion Exclude Label"
               parent="menu_drbb_products_settings"
-              sequence="6"
+              sequence="10"
               action="action_drbb_promotion_exclude_label"/>
 
     <menuitem id="menu_drbb_promotion_website_label"
               name="Promotion Website Label"
               parent="menu_drbb_products_settings"
               sequence="6"
+              sequence="11"
               action="action_drbb_promotion_website_label"/>
 
     <menuitem id="menu_drbb_product_quality_label"
