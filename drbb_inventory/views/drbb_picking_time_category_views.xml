@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="drbb_picking_time_category_view_form" model="ir.ui.view">
+        <field name="name">drbb.picking.time.category.view.form</field>
+        <field name="model">drbb.picking.time.category</field>
+        <field name="arch" type="xml">
+            <form string="Picking Time Category">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="description"/>
+                        </group>
+                        <group>
+                            <field name="picking_time" widget="float_time"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="drbb_picking_time_category_view_list" model="ir.ui.view">
+        <field name="name">drbb.picking.time.category.view.list</field>
+        <field name="model">drbb.picking.time.category</field>
+        <field name="arch" type="xml">
+            <list string="Picking Time Category" editable="top">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="picking_time" widget="float_time"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="drbb_picking_time_category_view_search" model="ir.ui.view">
+        <field name="name">drbb.picking.time.category.search</field>
+        <field name="model">drbb.picking.time.category</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="description"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_drbb_picking_time_category" model="ir.actions.act_window">
+           <field name="name">Picking Time Category</field>
+           <field name="res_model">drbb.picking.time.category</field>
+           <field name="view_mode">list,form</field>
+       </record>
+</odoo>

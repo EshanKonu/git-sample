@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="drbb_inventory_product_template_form_view">
+        <field name="name">drbb.inventory.product.template.form.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="product_stage_id" widget="statusbar" options="{'clickable': '1'}"/>
+            </xpath>
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="drbb_product_brand_id"/>
+                <field name="initial_forecasted_sales"/>
+                <field name="product_language_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="collection"/>
+                <field name="kvi"/>
+                <field name="drbb_product_multipart"/>
+                <field name="drbb_product_multipart_amount" invisible="not drbb_product_multipart"/>
+            </xpath>
+            <xpath expr="//div[@name='list_price_uom']" position="after">
+                <label for="drbb_base_unit_count"/>
+                <div name="drbb_base_unit_price" class="d-flex flex-row">
+                    <field name="drbb_base_unit_count" style="width: 4rem;"/>
+                    <field name="drbb_base_unit_id" options="{'no_open': True}" placeholder="Specify unit" style="width: 5rem;"/>
+                    <div class="d-flex flex-row">
+                        (
+                        <field name="drbb_base_unit_price" class="oe_inline"/>
+                        /<field name="drbb_base_unit_name" class="oe_inline"/>)
+                    </div>
+                </div>
+                <field name="recommended_retail_price"/>
+            </xpath>
+            <xpath expr="//div[@name='standard_price_uom']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//label[@id='standard_price_label']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='purchase']" position="inside">
+                <group col="1">
+                    <group string="Cost Price">
+                        <label
+                            for="standard_price"
+                            invisible="(id and product_variant_count != 1
+                                                    and not is_product_variant) or type == 'combo'"
+                            id="standard_price_label"
+                        />
+                        <div
+                            name="standard_price_uom"
+                            invisible="(id and product_variant_count != 1
+                                        and not is_product_variant) or type == 'combo'"
+                        >
+                            <field
+                                name="standard_price"
+                                class="oe_inline"
+                                widget="monetary"
+                                options="{
+                                    'currency_field': 'cost_currency_id',
+                                    'field_digits': True,
+                                }"
+                            />
+                            <span groups="uom.group_uom">
+                                per
+                                <field name="uom_name" class="oe_inline"/>
+                            </span>
+                        </div>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//group[@name='group_lots_and_weight']" position="inside">
+                <field name="drbb_picking_time_category_id"/>
+            </xpath>
+            <xpath expr="//label[@for='weight']" position="before">
+                <field name="online_minimum_stock"/>
+                <field name="abc_class_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                <field name="drbb_product_inventory_section_id" options="{'no_create': True, 'no_create_edit':True}"/>
+            </xpath>
+            <xpath expr="//notebook//page[@name='inventory']" position="after">
+                <page string="Extra Info">
+                    <group>
+                        <group>
+                            <field name="cs_item_number"/>
+                            <field name="item_role_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                            <field name="brand_type_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                            <field name="centrally_stocked"/>
+                            <field name="quality_labels_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                            <field name="available_in_webshop" widget="boolean_toggle"/>
+                            <field name="available_in_store" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="publisher"/>
+                            <field name="on_item_number"/>
+                            <field name="item_type_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                            <field name="assortment_year"/>
+                            <field name="medical_device"/>
+                            <field name="category_manager_ids" widget="many2many_tags"
+                                   domain="[('share', '=', False)]"/>
+                            <field name="category_supporter_ids" widget="many2many_tags"
+                                   domain="[('share', '=', False)]"/>
+                            <field name="expiration_date"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//page[@name='sales']/group[@name='sale']" position="inside">
+                <group name="promotion_info" string="Promotion Info">
+                    <field name="drbb_promotion_exclude_tag_ids" widget="many2many_tags"/>
+                    <field name="drbb_promotion_website_tag_ids" widget="many2many_tags"/>
+                    <field name="drbb_promotion_website_tag_english" invisible="1"/>
+                    <field name="drbb_promotion_website_tag_dutch" invisible="1"/>
+                    <field name="drbb_promotion_website_tag_french" invisible="1"/>
+                </group>
+            </xpath>
+            <xpath expr="//div[@name='list_price_uom']" position="after">
+                <field name="current_pricelist_price"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="drbb_inventory_product_template_search_view" model="ir.ui.view">
+        <field name="name">drbb.inventory.product.template.search.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='type']" position="after">
+                <filter string="Product Stage" name="product_stage_id" context="{'group_by':'product_stage_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="drbb_inventory_product_template_only_form_view">
+        <field name="name">drbb.inventory.product.template.only.form.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='default_code']" position="attributes">
+                <attribute name="string">Reference</attribute>
+            </xpath>
+            <xpath expr="//field[@name='cs_item_number']" position="after">
+                <field name="item_status_id" options="{'no_create': True, 'no_create_edit':True}" invisible="product_variant_count &gt; 1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_product_template" model="ir.actions.act_window">
+        <field name="name">Products</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">kanban,list,form,activity</field>
+        <field name="view_id" ref="product.product_template_kanban_view"/>
+        <field name="search_view_id" ref="product.product_template_search_view"/>
+        <field name="context">{"search_default_filter_to_sell":1, "sale_multi_pricelist_product_template": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new product
+            </p><p>
+                You must define a product for everything you sell or purchase,
+                whether it's a storable product, a consumable or a service.
+            </p>
+        </field>
+    </record>
+
+    <record id="drbb_inventory_view_template_property_form" model="ir.ui.view">
+        <field name="name">drbb.inventory.product.template.stock.property.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.view_template_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//label[@for='is_storable']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+            <xpath expr="//div[field[@name='is_storable']]" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='tracking']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

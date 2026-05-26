@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="drbb_inventory.DRBBInventoryGanttRowProgressBar" t-inherit="web_gantt.GanttRowProgressBar" t-inherit-mode="extension">
+        <xpath expr="//span[hasclass('o_gantt_group_hours')]" position="after">
+            <t t-if="props.progressBar.remaining_time">
+                <span class="ms-1" t-esc="`( Remaining ${props.progressBar.remaining_time}mins)`"/>
+            </t>
+        </xpath>
+    </t>
+
+</templates>

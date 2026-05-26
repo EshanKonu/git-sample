@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="drbb_inventory_view_move_line_tree" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock_picking_batch.move.line.tree</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock_picking_batch.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="default_order">picking_weight</attribute>
+            </xpath>
+            <xpath expr="//field[@name='quantity']" position="after">
+                <field name="picking_weight"/>
+                <field name="picking_time" widget="float_time"/>
+                <field name="picking_time_location" widget="float_time"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

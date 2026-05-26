@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="stock_barcode.MainComponent" t-inherit-mode="extension" t-translation="off">
+        <xpath expr="//div[hasclass('navbar navbar-expand p-2 m-1')]" position="attributes">
+            <attribute name="t-if">!env.model.record.hide_header_footer_in_barcode</attribute>
+        </xpath>
+
+        <xpath expr="//div[@t-if='state.cameraScannedEnabled']" position="attributes">
+            <attribute name="t-if">!env.model.record.hide_header_footer_in_barcode and state.cameraScannedEnabled</attribute>
+        </xpath>
+
+        <xpath expr="//footer[@t-if='displayActionButtons']" position="attributes">
+            <attribute name="t-if">!env.model.record.hide_header_footer_in_barcode and displayActionButtons</attribute>
+        </xpath>
+
+        <xpath expr="//footer[hasclass('o_barcode_control o_action_buttons d-flex mt-auto')]" position="attributes">
+            <attribute name="t-if">env.model.displayReturnButton and state.view === 'barcodeLines' and !env.model.record.hide_header_footer_in_barcode</attribute>
+        </xpath>
+
+        <xpath expr="//button[@t-if='env.model.displayPutInPackButton']" position="after">
+            <button t-if="env.model.displaySplitBatch" t-on-click="splitBatch"
+                    t-att-disabled="!env.model.canSplitBatch"
+                    class="o_split_batch btn btn-secondary">
+                Split Batch
+            </button>
+        </xpath>
+    </t>
+</templates>
