@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="drbb_inventory_stock_picking_batch_form" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.picking.batch.form</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch.stock_picking_batch_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button string="Split Batch / Wave" type="object" name="open_split_batch_wave"/>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="priority" widget="priority"/>
+            </xpath>
+            <xpath expr="//button[@name='action_view_reception_report']" position="after">
+                <button name="action_show_split_batch_pickings" class="oe_stat_button" icon="fa-list" type="object" invisible="not show_split_batch_transfer_action_button">
+                    <div class="o_form_field o_stat_info">
+                        <span class="o_stat_text">Split Batch Transfers</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='scheduled_date']" position="after">
+                <field name="scheduled_end_date" readonly="0"/>
+                <field name="estimated_picking_time" widget="float_time"/>
+                <field name="estimated_picking_time_location" widget="float_time"/>
+            </xpath>
+            <xpath expr="//field[@name='description']" position="after">
+                <field name="bypass_state_sanity_check" groups="stock.group_stock_manager"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="drbb_inventory_stock_picking_batch_tree" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.picking.batch.tree</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch.stock_picking_batch_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="default_order">priority desc, name desc</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="priority" optional="show" widget="priority" nolabel="1"/>
+            </xpath>
+            <xpath expr="//field[@name='scheduled_date']" position="after">
+                <field name="estimated_picking_time" widget="float_time"/>
+                <field name="estimated_picking_time_location" widget="float_time"/>
+                <field name="activity_ids" widget="list_activity" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="drbb_inventory_stock_picking_batch_kanban" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.picking.batch.kanban</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch.stock_picking_batch_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="default_order">priority desc, name desc</attribute>
+            </xpath>
+            <xpath expr="//kanban/field[@name='company_id']" position="after">
+                <field name="priority"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="priority" widget="priority" class="pt-1 me-1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="drbb_inventory_stock_picking_type_kanban_batch" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.picking.type.kanban.batch</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock_picking_batch.stock_picking_type_kanban_batch"/>
+        <field name="arch" type="xml">
+            <xpath expr="//a[@name='%(stock_picking_batch.action_picking_tree_wave)d']" position="attributes">
+                <attribute name="name">action_wave</attribute>
+                <attribute name="type">object</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="drbb_inventory_stock_picking_batch_gantt" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.picking.batch.gantt</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="arch" type="xml">
+            <gantt
+                    date_start="scheduled_date"
+                    date_stop="scheduled_end_date"
+                    default_group_by="user_id"
+                    default_scale="week"
+                    color="id"
+                    disable_drag_drop="1"
+                    progress_bar="user_id"
+            >
+
+                <field name="scheduled_date"/>
+                <field name="scheduled_end_date"/>
+                <field name="user_id"/>
+                <field name="name"/>
+                <templates>
+                    <div t-name="gantt-popover">
+                        <div id="allocated_hours">
+                            <strong>Allocated Time —</strong>
+                            <t t-esc="estimated_picking_time"/>
+                        </div>
+                        <div>
+                            <t t-esc="scheduled_date.toFormat('f ')"/>
+                            <i class="fa fa-long-arrow-right" title="Arrow"/>
+                            <t t-esc="scheduled_end_date.toFormat(' f')"/>
+                        </div>
+                        <p class="mt-2 mb-0" t-if="name">
+                            <t t-esc="name.slice(0, 200) + (name.length > 200?'…':'')"/>
+                        </p>
+                    </div>
+                </templates>
+            </gantt>
+        </field>
+    </record>
+
+    <record id="drbb_inventory_stock_picking_batch_pivot" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.picking.batch.pivot</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="arch" type="xml">
+            <pivot string="Batch Transfers" sample="1">
+                <field name="picking_type_id" type="row"/>
+                <field name="estimated_picking_time" type="measure" widget="float_time"/>
+                <field name="estimated_picking_time_location" type="measure" widget="float_time"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="stock_picking_batch.stock_picking_batch_action" model="ir.actions.act_window">
+        <field name="view_mode">list,kanban,form,gantt,pivot</field>
+    </record>
+
+    <record id="stock_picking_batch.action_picking_tree_wave" model="ir.actions.act_window">
+        <field name="view_mode">list,kanban,form,gantt,pivot</field>
+    </record>
+
+    <record id="drbb_inventory_picking_batch_action_split_batch" model="ir.actions.server"> <!-- Menu + python -->
+        <field name="name">Split Batch</field>
+        <field name="model_id" ref="stock_picking_batch.model_stock_picking_batch"/>
+        <field name="binding_model_id" ref="stock_picking_batch.model_stock_picking_batch"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="state">code</field>
+        <field name="code">
+for record in records:
+    action = record.action_split_batch()
+        </field>
+    </record>
+</odoo>

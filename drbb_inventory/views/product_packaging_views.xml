@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_drbb_packaging_view" model="ir.actions.act_window">
+        <field name="name">Product Packagings</field>
+        <field name="res_model">product.packaging</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('product.product_packaging_tree_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('product.product_packaging_form_view')})]"/>
+    </record>
+</odoo>

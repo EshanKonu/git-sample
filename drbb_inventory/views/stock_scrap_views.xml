@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="drbb_inventory_scrap_product_selector" model="ir.ui.view">
+        <field name="name">drbb.inventory.scrap.product.selector</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="stock_barcode.scrap_product_selector"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[contains(@class,'row')][.//field[@name='should_replenish']]" position="after">
+                <div class="row" groups="stock.group_stock_multi_locations">
+                    <div class="col-12 my-2 d-flex align-items-baseline">
+                        <i class="fa fa-fw fa-lg fa-info-circle me-3" title="Scrap Reason" />
+                        <field name="scrap_reason_tag_ids" widget="many2many_tags" placeholder="Scrap Reason"/>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

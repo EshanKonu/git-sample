@@ -1,0 +1,29 @@
+<odoo>
+    <record id="drbb_inventory_stock_barcode_batch_picking_view_info" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.picking.batch.form.view.barcode</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_barcode_picking_batch.stock_barcode_batch_picking_view_info"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="priority" widget="priority" readonly="state in ['cancel', 'done']"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="drbb_inventory_stock_barcode_batch_picking_view_kanban" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.picking.batch.kanban.barcode</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_barcode_picking_batch.stock_barcode_batch_picking_view_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="default_order">priority desc, name desc</attribute>
+            </xpath>
+            <xpath expr="//kanban/field[@name='company_id']" position="after">
+                <field name="priority"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="priority" widget="priority" class="pt-1 me-1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

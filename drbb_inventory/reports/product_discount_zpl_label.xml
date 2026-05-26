@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_zpl_product_discount">
+        <t t-foreach="product_details" t-as="product_dict">
+            <t t-set="product" t-value="product_dict.get('product_id')"/>
+            <t t-set="quantity" t-value="product_dict.get('quantity')"/>
+            <t t-set="price_per_unit" t-value="product_dict.get('price_per_unit')"/>
+            <t t-set="previous_lowest_price_label" t-value="product_dict.get('previous_lowest_price_label')"/>
+            <t t-set="discount" t-value="product.lowest_sale_percentage"/>
+            <t t-set="product_names_formatted_list" t-value="product._get_product_names_formatted_list()"/>
+            <t t-foreach="range(quantity)" t-as="qty">
+                <t t-translation="off">
+                    <t t-set="x_axis" t-value="20"/>
+                    <t t-set="show_discount_fields" t-value="False"/>
+^XA
+^CI28
+^FWR
+<t t-foreach="range(2)" t-as="print">
+^BY1,2,30
+^FO<t t-esc="x_axis + 70"/>,40
+^A0,25,20
+^BC,50,Y,N,N^FD<t t-esc="product.barcode"/>^FS
+
+^FO<t t-esc="x_axis + 50"/>,240
+^A0,25,20
+^FD<t t-raw="product.default_code"/>^FS
+
+^FO<t t-esc="x_axis + 50"/>,350
+^A0,25,20
+^FD<t t-raw="product.item_status_id.name"/>^FS
+
+^FO<t t-esc="x_axis + 130"/>,40
+^A0,25,20
+^FD<t t-raw="product.drbb_product_brand_id.name"/>^FS
+
+<t t-set="name_row_x_position" t-value="210"/>
+<t t-foreach="product_names_formatted_list" t-as="name_row">
+^FO<t t-raw="x_axis + name_row_x_position"/>,40
+^A0,35,23
+^FD<t t-raw="name_row"/>^FS
+<t t-set="name_row_x_position" t-value="name_row_x_position - 40"/></t>
+
+^FO<t t-esc="x_axis + 95"/>,350
+^GB155,190,2^FS
+
+^FO<t t-esc="x_axis + 100"/>,450
+^A0,15,15
+^FD<t t-esc="price_per_unit"/>^FS
+
+<t t-if="show_discount_fields">
+^FO<t t-esc="x_axis + 115"/>,375
+^A0,30,30
+^FD<t t-esc="discount" t-options="{'widget': 'float', 'precision': 2}"/>%^FS
+</t>
+
+^FO<t t-esc="x_axis + 150"/>,360
+^A0,45,45
+^FD<t t-esc="product.currency_id.symbol"/>
+<t t-if="show_discount_fields">
+<t t-esc="product.last_recorded_sale_price" t-options="{'widget': 'float', 'precision': 2}"/>
+</t>
+<t t-else="">
+<t t-esc="product.list_price" t-options="{'widget': 'float', 'precision': 2}"/>
+</t>
+^FS
+
+<t t-if="show_discount_fields">
+^FO<t t-esc="x_axis + 203"/>,360
+^A0,30,30
+^FD<t t-esc="product.currency_id.symbol"/><t t-esc="round(product.list_price, 2)" t-options="{'widget': 'float', 'precision': 2}"/>^FS
+
+^FO<t t-esc="x_axis + 220"/>,360
+^GB3,100,3^FS
+
+^FO<t t-esc="x_axis + 235"/>,435
+^A0,11,9
+^FD<t t-esc="previous_lowest_price_label"/>^FS</t>
+
+<t t-set="show_discount_fields" t-value="True"/>
+<t t-set="x_axis" t-value="x_axis + 350"/></t>
+^XZ
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_zpl_product_discount" model="ir.actions.report">
+        <field name="name">Product Label Discount</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-text</field>
+        <field name="report_name">drbb_inventory.report_zpl_product_discount</field>
+        <field name="report_file">drbb_inventory.report_zpl_product_discount</field>
+        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+    </record>
+</odoo>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="drbb_inventory_product_category_form_view">
+        <field name="name">drbb.inventory.product.category.form.view</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="code" class="oe_inline"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
