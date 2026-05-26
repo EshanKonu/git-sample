@@ -12,13 +12,6 @@ access_drbb_product_brand_type_user,access.drbb.product.brand.type.user,model_dr
 access_drbb_product_item_role_user,access.drbb.product.item.role.user,model_drbb_product_item_role,stock.group_stock_user,1,1,1,1
 access_drbb_product_item_status_user,access.drbb.product.item.status.user,model_drbb_product_item_status,stock.group_stock_user,1,1,1,1
 access_drbb_product_item_type_user,access.drbb.product.item.type.user,model_drbb_product_item_type,stock.group_stock_user,1,1,1,1
-access_drbb_article_group_user,access.drbb.article.group.user,model_drbb_article_group,stock.group_stock_user,1,1,1,1
-access_drbb_product_collection_user,access.drbb.product.collection.user,model_drbb_product_collection,stock.group_stock_user,1,1,1,1
-access_drbb_product_subcollection_user,access.drbb.product.subcollection.user,model_drbb_product_subcollection,stock.group_stock_user,1,1,1,1
-access_drbb_product_other_color_user,access.drbb.product.other.color.user,model_drbb_product_other_color,stock.group_stock_user,1,1,1,1
-access_drbb_product_cross_sell_user,access.drbb.product.cross.sell.user,model_drbb_product_cross_sell,stock.group_stock_user,1,1,1,1
-access_drbb_product_other_color_variant_user,access.drbb.product.other.color.variant.user,model_drbb_product_other_color_variant,stock.group_stock_user,1,1,1,1
-access_drbb_product_cross_sell_variant_user,access.drbb.product.cross.sell.variant.user,model_drbb_product_cross_sell_variant,stock.group_stock_user,1,1,1,1
 access_drbb_product_language_user,access.drbb.product.language.user,model_drbb_product_language,stock.group_stock_user,1,1,1,1
 access_drbb_product_quality_label_user,access.drbb.product.quality.label.user,model_drbb_product_quality_label,stock.group_stock_user,1,1,1,1
 access_drbb_location_group_user,access.drbb.location.group.user,model_drbb_location_group,stock.group_stock_user,1,1,1,1

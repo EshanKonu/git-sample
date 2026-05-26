@@ -24,23 +24,6 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='sales']/group[@name='sale']" position="inside">
-                <group name="drbb_ecommerce_relations" string="eCommerce Relations" colspan="4">
-                    <field name="drbb_commercial_supplier_description" widget="text" colspan="2"/>
-                    <field name="drbb_other_color_variant_ids" context="{'default_product_id': id}" colspan="2" nolabel="1">
-                        <list editable="bottom">
-                            <field name="sequence" widget="handle"/>
-                            <field name="related_product_id" domain="[('id', '!=', parent.id)]"/>
-                        </list>
-                    </field>
-                    <field name="drbb_cross_sell_variant_ids" context="{'default_product_id': id}" colspan="2" nolabel="1">
-                        <list editable="bottom">
-                            <field name="sequence" widget="handle"/>
-                            <field name="related_product_id" domain="[('id', '!=', parent.id)]"/>
-                        </list>
-                    </field>
-                </group>
-            </xpath>
             <xpath expr="//field[@name='cs_item_number']" position="after">
                 <field name="item_status_id"/>
             </xpath>

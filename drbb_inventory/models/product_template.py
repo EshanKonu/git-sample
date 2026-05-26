@@ -6,12 +6,8 @@ class ProductTemplate(models.Model):
 
     drbb_picking_time_category_id = fields.Many2one('drbb.picking.time.category', string="Picking Time Category")
     drbb_product_brand_id = fields.Many2one("drbb.product.brand", string="Brand")
-    drbb_article_group_id = fields.Many2one("drbb.article.group", string="Article Group")
     collection = fields.Char(string="Collection")
-    drbb_product_subcollection_id = fields.Many2one("drbb.product.subcollection", string="Subcollection")
-    drbb_collection_id = fields.Many2one("drbb.product.collection", string="Collection 2")
     publisher = fields.Char(string="Publisher")
-    drbb_commercial_supplier_description = fields.Text(string="Commercial description supplier")
     item_status_id = fields.Many2one(string="Item Status", comodel_name='drbb.product.item.status',
                                      compute='_compute_item_status_id',
                                      inverse='_set_item_status_id',
@@ -226,4 +222,5 @@ class ProductTemplate(models.Model):
         """Compute drbb_promotion_exclude_tag_ids_char seperated by commas"""
         for product_template in self:
             product_template.drbb_promotion_exclude_tag_ids_char = ", ".join(
+                x.name for x in product_template["drbb_promotion_exclude_tag_ids"])
                 x.name for x in product_template["drbb_promotion_exclude_tag_ids"])
