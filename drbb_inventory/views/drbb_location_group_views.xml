@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="drbb_location_group_view_form" model="ir.ui.view">
+        <field name="name">drbb.location.group.view.form</field>
+        <field name="model">drbb.location.group</field>
+        <field name="arch" type="xml">
+            <form string="Location Group">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="location_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="drbb_location_group_view_list" model="ir.ui.view">
+        <field name="name">drbb.location.group.view.list</field>
+        <field name="model">drbb.location.group</field>
+        <field name="arch" type="xml">
+            <list string="Location Groups">
+                <field name="name"/>
+                <field name="location_ids" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="drbb_location_group_view_search" model="ir.ui.view">
+        <field name="name">drbb.location.group.search</field>
+        <field name="model">drbb.location.group</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="location_ids"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_drbb_location_group" model="ir.actions.act_window">
+        <field name="name">Location Groups</field>
+        <field name="res_model">drbb.location.group</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="drbb_product_brand_type_view_form" model="ir.ui.view">
+        <field name="name">drbb.product.brand.type.view.form</field>
+        <field name="model">drbb.product.brand.type</field>
+        <field name="arch" type="xml">
+            <form string="Product Brand Type">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Name"/>
+                        </h1>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="drbb_product_brand_type_view_list" model="ir.ui.view">
+        <field name="name">drbb.product.brand.type.view.list</field>
+        <field name="model">drbb.product.brand.type</field>
+        <field name="arch" type="xml">
+            <list string="Product Brand Type">
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="drbb_product_brand_type_view_search" model="ir.ui.view">
+        <field name="name">drbb.product.brand.type.search</field>
+        <field name="model">drbb.product.brand.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_drbb_product_brand_type" model="ir.actions.act_window">
+        <field name="name">Product Brand Type</field>
+        <field name="res_model">drbb.product.brand.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

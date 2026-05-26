@@ -1,0 +1,2275 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* drbb_inventory
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+e-20250401\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-10 06:02+0000\n"
+"PO-Revision-Date: 2025-09-10 06:02+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: drbb_inventory
+#: model:ir.actions.report,print_report_name:drbb_inventory.action_report_zpl_product_discount
+msgid "'Products Labels - %s' % (object.name)"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:mail.template,body_html:drbb_inventory.drbb_inventory_ready_to_pick_mail_template
+msgid ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"                <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
+"                    Dear Customer,<br/><br/>\n"
+"                    Goods news! Your order can now be collected at Dreambaby.<br/><br/>\n"
+"                    Your package will remain available for you for the next 5 working days.<br/><br/>\n"
+"                    Kind Regards.<br/><br/>\n"
+"                </p>\n"
+"            </div>\n"
+"            <br/>\n"
+"            <br/>\n"
+"            <t t-if=\"object.sale_id\">\n"
+"                <div style=\"margin: 0px; padding: 0px;\">\n"
+"                    <p style=\"margin: 0px; padding: 0px; font-size: 12px;\">\n"
+"                        Hello,\n"
+"                        <br/><br/>\n"
+"                        <t t-set=\"tx_sudo\" t-value=\"object.sale_id.get_portal_last_transaction()\"/>\n"
+"                        Your order <span style=\"font-weight:bold;\" t-out=\"object.sale_id.name or ''\">S00049</span> amounting in <span style=\"font-weight:bold;\" t-out=\"format_amount(object.sale_id.amount_total, object.sale_id.currency_id) or ''\">$ 10.00</span>\n"
+"                        <t t-if=\"object.sale_id.state == 'sale' or (tx_sudo and tx_sudo.state in ('done', 'authorized'))\">\n"
+"                            has been confirmed.<br/>\n"
+"                            Thank you for your trust!\n"
+"                        </t>\n"
+"                        <t t-elif=\"tx_sudo and tx_sudo.state == 'pending'\">\n"
+"                            is pending. It will be confirmed when the payment is received.\n"
+"                            <t t-if=\"object.sale_id.reference\">\n"
+"                                Your payment reference is <span style=\"font-weight:bold;\" t-out=\"object.sale_id.reference or ''\"/>.\n"
+"                            </t>\n"
+"                        </t>\n"
+"                        <br/>\n"
+"                        <t t-set=\"documents\" t-value=\"object.sale_id._get_product_documents()\"/>\n"
+"                        <t t-if=\"documents\">\n"
+"                            <br/>\n"
+"                            <t t-if=\"len(documents)&gt;1\">\n"
+"                                Here are some additional documents that may interest you:\n"
+"                            </t>\n"
+"                            <t t-else=\"\">\n"
+"                                Here is an additional document that may interest you:\n"
+"                            </t>\n"
+"                            <ul style=\"margin-bottom: 0;\">\n"
+"                                <t t-foreach=\"documents\" t-as=\"document\">\n"
+"                                    <li style=\"font-size: 13px;\">\n"
+"                                        <a t-out=\"document.ir_attachment_id.name\" t-att-href=\"object.sale_id.get_portal_url('/document/' + str(document.id))\" t-att-target=\"target\"/>\n"
+"                                    </li>\n"
+"                                </t>\n"
+"                            </ul>\n"
+"                        </t>\n"
+"                        <br/>\n"
+"                        Do not hesitate to contact us if you have any questions.\n"
+"                        <t t-if=\"not is_html_empty(object.sale_id.user_id.signature)\" data-o-mail-quote-container=\"1\">\n"
+"                            <br/><br/>\n"
+"                            <t t-out=\"object.sale_id.user_id.signature or ''\" data-o-mail-quote=\"1\">--<br data-o-mail-quote=\"1\"/>Mitchell Admin</t>\n"
+"                        </t>\n"
+"                        <br/><br/>\n"
+"                    </p>\n"
+"                    <t t-if=\"hasattr(object.sale_id, 'website_id') and object.sale_id.website_id\">\n"
+"                        <div style=\"margin: 0px; padding: 0px;\">\n"
+"                            <table width=\"100%\" style=\"color: #454748; font-size: 12px; border-collapse: collapse; white-space: nowrap;\">\n"
+"                                <tr style=\"border-bottom: 2px solid #dee2e6;\">\n"
+"                                    <td style=\"width: 150px;\"><span style=\"font-weight:bold;\">Products</span></td>\n"
+"                                    <td/>\n"
+"                                    <td width=\"15%\" align=\"center\"><span style=\"font-weight:bold;\">Quantity</span></td>\n"
+"                                    <td width=\"20%\" align=\"right\">\n"
+"                                        <span style=\"font-weight:bold;\">\n"
+"                                            <t t-if=\"object.sale_id.website_id.show_line_subtotals_tax_selection == 'tax_excluded'\">\n"
+"                                                Tax Excl.\n"
+"                                            </t>\n"
+"                                            <t t-else=\"\">\n"
+"                                                Tax Incl.\n"
+"                                            </t>\n"
+"                                        </span>\n"
+"                                    </td>\n"
+"                                </tr>\n"
+"                            </table>\n"
+"                            <t t-set=\"current_subtotal\" t-value=\"0\"/>\n"
+"                            <t t-foreach=\"object.sale_id.order_line\" t-as=\"line\">\n"
+"                                <t t-set=\"line_subtotal\" t-value=\"                     line.price_subtotal                     if object.sale_id.website_id.show_line_subtotals_tax_selection == 'tax_excluded'                     else line.price_total                 \"/>\n"
+"                                <t t-set=\"current_subtotal\" t-value=\"current_subtotal + line_subtotal\"/>\n"
+"                                <t t-if=\"(not hasattr(line, 'is_delivery') or not line.is_delivery) and (                     line.display_type in ['line_section', 'line_note']                     or line.product_type == 'combo'                 )\">\n"
+"                                    <table width=\"100%\" style=\"color: #454748; font-size: 12px; border-collapse: collapse;\">\n"
+"                                        <t t-set=\"loop_cycle_number\" t-value=\"loop_cycle_number or 0\"/>\n"
+"                                        <tr t-att-style=\"'background-color: #f2f2f2' if loop_cycle_number % 2 == 0 else 'background-color: #ffffff'\">\n"
+"                                            <t t-set=\"loop_cycle_number\" t-value=\"loop_cycle_number + 1\"/>\n"
+"                                            <td colspan=\"4\">\n"
+"                                                <t t-if=\"line.display_type == 'line_section' or line.product_type == 'combo'\">\n"
+"                                                    <span style=\"font-weight:bold;\" t-out=\"line.name or ''\">Taking care of Trees Course</span>\n"
+"                                                    <t t-set=\"current_section\" t-value=\"line\"/>\n"
+"                                                    <t t-set=\"current_subtotal\" t-value=\"0\"/>\n"
+"                                                </t>\n"
+"                                                <t t-elif=\"line.display_type == 'line_note'\">\n"
+"                                                    <i t-out=\"line.name or ''\">Taking care of Trees Course</i>\n"
+"                                                </t>\n"
+"                                            </td>\n"
+"                                        </tr>\n"
+"                                    </table>\n"
+"                                </t>\n"
+"                                <t t-elif=\"(not hasattr(line, 'is_delivery') or not line.is_delivery)\">\n"
+"                                    <table width=\"100%\" style=\"color: #454748; font-size: 12px; border-collapse: collapse;\">\n"
+"                                        <t t-set=\"loop_cycle_number\" t-value=\"loop_cycle_number or 0\"/>\n"
+"                                        <tr t-att-style=\"'background-color: #f2f2f2' if loop_cycle_number % 2 == 0 else 'background-color: #ffffff'\">\n"
+"                                            <t t-set=\"loop_cycle_number\" t-value=\"loop_cycle_number + 1\"/>\n"
+"                                            <td style=\"width: 150px;\">\n"
+"                                                <img t-attf-src=\"/web/image/product.product/{{ line.product_id.id }}/image_128\" style=\"width: 64px; height: 64px; object-fit: contain;\" alt=\"Product image\"/>\n"
+"                                            </td>\n"
+"                                            <td align=\"left\" t-out=\"line.product_id.name or ''\">\tTaking care of Trees Course</td>\n"
+"                                            <td width=\"15%\" align=\"center\" t-out=\"line.product_uom_qty or ''\">1</td>\n"
+"                                            <td width=\"20%\" align=\"right\"><span style=\"font-weight:bold; white-space: nowrap;\">\n"
+"                                                <t t-if=\"object.sale_id.website_id.show_line_subtotals_tax_selection == 'tax_excluded'\">\n"
+"                                                    <t t-out=\"format_amount(line.price_reduce_taxexcl, object.sale_id.currency_id) or ''\">$ 10.00</t>\n"
+"                                                </t>\n"
+"                                                <t t-else=\"\">\n"
+"                                                    <t t-out=\"format_amount(line.price_reduce_taxinc, object.sale_id.currency_id) or ''\">$ 10.00</t>\n"
+"                                                </t>\n"
+"                                            </span></td>\n"
+"                                        </tr>\n"
+"                                    </table>\n"
+"                                </t>\n"
+"                                <t t-if=\"current_section and (                     line_last                     or object.sale_id.order_line[line_index+1].display_type == 'line_section'                     or object.sale_id.order_line[line_index+1].product_type == 'combo'                     or (                         line.combo_item_id                         and not object.sale_id.order_line[line_index+1].combo_item_id                     )                 ) and not line.is_downpayment\">\n"
+"                                    <t t-set=\"current_section\" t-value=\"None\"/>\n"
+"                                    <table width=\"100%\" style=\"color: #454748; font-size: 12px; border-collapse: collapse;\">\n"
+"                                        <t t-set=\"loop_cycle_number\" t-value=\"loop_cycle_number or 0\"/>\n"
+"                                        <tr t-att-style=\"'background-color: #f2f2f2' if loop_cycle_number % 2 == 0 else 'background-color: #ffffff'\">\n"
+"                                            <t t-set=\"loop_cycle_number\" t-value=\"loop_cycle_number + 1\"/>\n"
+"                                            <td style=\"width: 100%\" align=\"right\">\n"
+"                                                <span style=\"font-weight: bold;\">Subtotal:</span>\n"
+"                                                <span t-out=\"format_amount(current_subtotal, object.sale_id.currency_id) or ''\">$ 10.00</span>\n"
+"                                            </td>\n"
+"                                        </tr>\n"
+"                                    </table>\n"
+"                                </t>\n"
+"                            </t>\n"
+"                        </div>\n"
+"                        <div style=\"margin: 0px; padding: 0px;\" t-if=\"hasattr(object, 'carrier_id') and object.sale_id.carrier_id\">\n"
+"                            <table width=\"100%\" style=\"color: #454748; font-size: 12px; border-spacing: 0px 4px; white-space: nowrap;\" align=\"right\">\n"
+"                                <tr>\n"
+"                                    <td style=\"width: 60%\"/>\n"
+"                                    <td style=\"width: 30%; border-top: 1px solid #dee2e6;\" align=\"right\"><span style=\"font-weight:bold;\">Delivery:</span></td>\n"
+"                                    <td style=\"width: 10%; border-top: 1px solid #dee2e6;\" align=\"right\" t-out=\"format_amount(object.sale_id.amount_delivery, object.sale_id.currency_id) or ''\">$ 0.00</td>\n"
+"                                </tr>\n"
+"                                <tr>\n"
+"                                    <td style=\"width: 60%\"/>\n"
+"                                    <td style=\"width: 30%;\" align=\"right\"><span style=\"font-weight:bold;\">Untaxed Amount:</span></td>\n"
+"                                    <td style=\"width: 10%;\" align=\"right\" t-out=\"format_amount(object.sale_id.amount_untaxed, object.sale_id.currency_id) or ''\">$ 10.00</td>\n"
+"                                </tr>\n"
+"                            </table>\n"
+"                        </div>\n"
+"                        <div style=\"margin: 0px; padding: 0px;\" t-else=\"\">\n"
+"                            <table width=\"100%\" style=\"color: #454748; font-size: 12px; border-spacing: 0px 4px; white-space: nowrap;\" align=\"right\">\n"
+"                                <tr>\n"
+"                                    <td style=\"width: 60%\"/>\n"
+"                                    <td style=\"width: 30%; border-top: 1px solid #dee2e6;\" align=\"right\"><span style=\"font-weight:bold;\">Untaxed Amount:</span></td>\n"
+"                                    <td style=\"width: 10%; border-top: 1px solid #dee2e6;\" align=\"right\" t-out=\"format_amount(object.sale_id.amount_untaxed, object.sale_id.currency_id) or ''\">$ 10.00</td>\n"
+"                                </tr>\n"
+"                            </table>\n"
+"                        </div>\n"
+"                        <div style=\"margin: 0px; padding: 0px;\">\n"
+"                            <table width=\"100%\" style=\"color: #454748; font-size: 12px; border-spacing: 0px 4px; white-space: nowrap;\" align=\"right\">\n"
+"                                <tr>\n"
+"                                    <td style=\"width: 60%\"/>\n"
+"                                    <td style=\"width: 30%;\" align=\"right\"><span style=\"font-weight:bold;\">Taxes:</span></td>\n"
+"                                    <td style=\"width: 10%;\" align=\"right\" t-out=\"format_amount(object.sale_id.amount_tax, object.sale_id.currency_id) or ''\">$ 0.00</td>\n"
+"                                </tr>\n"
+"                                <tr>\n"
+"                                    <td style=\"width: 60%\"/>\n"
+"                                    <td style=\"width: 30%; border-top: 1px solid #dee2e6;\" align=\"right\"><span style=\"font-weight:bold;\">Total:</span></td>\n"
+"                                    <td style=\"width: 10%; border-top: 1px solid #dee2e6;\" align=\"right\" t-out=\"format_amount(object.sale_id.amount_total, object.sale_id.currency_id) or ''\">$ 10.00</td>\n"
+"                                </tr>\n"
+"                            </table>\n"
+"                        </div>\n"
+"                        <div t-if=\"object.sale_id.partner_invoice_id\" style=\"margin: 0px; padding: 0px;\">\n"
+"                            <table width=\"100%\" style=\"color: #454748; font-size: 12px;\">\n"
+"                                <tr>\n"
+"                                    <td style=\"padding-top: 10px;\">\n"
+"                                        <span style=\"font-weight:bold;\">Bill to:</span>\n"
+"                                        <t t-out=\"object.sale_id.partner_invoice_id.street or ''\">1201 S Figueroa St</t>\n"
+"                                        <t t-out=\"object.sale_id.partner_invoice_id.city or ''\">Los Angeles</t>\n"
+"                                        <t t-out=\"object.sale_id.partner_invoice_id.state_id.name or ''\">California</t>\n"
+"                                        <t t-out=\"object.sale_id.partner_invoice_id.zip or ''\">90015</t>\n"
+"                                        <t t-out=\"object.sale_id.partner_invoice_id.country_id.name or ''\">United States</t>\n"
+"                                    </td>\n"
+"                                </tr>\n"
+"                                <tr>\n"
+"                                    <td>\n"
+"                                        <span style=\"font-weight:bold;\">Payment Method:</span>\n"
+"                                        <t t-if=\"tx_sudo.token_id\">\n"
+"                                            <t t-out=\"tx_sudo.token_id.display_name or ''\"/>\n"
+"                                        </t>\n"
+"                                        <t t-else=\"\">\n"
+"                                            <t t-out=\"tx_sudo.provider_id.sudo().name or ''\"/>\n"
+"                                        </t>\n"
+"                                        (<t t-out=\"format_amount(tx_sudo.amount, object.sale_id.currency_id) or ''\">$ 10.00</t>)\n"
+"                                    </td>\n"
+"                                </tr>\n"
+"                            </table>\n"
+"                        </div>\n"
+"                        <div t-if=\"object.sale_id.partner_shipping_id and not object.sale_id.only_services\" style=\"margin: 0px; padding: 0px;\">\n"
+"                            <table width=\"100%\" style=\"color: #454748; font-size: 12px;\">\n"
+"                                <tr>\n"
+"                                    <td>\n"
+"                                        <br/>\n"
+"                                        <span style=\"font-weight:bold;\">Ship to:</span>\n"
+"                                        <t t-out=\"object.sale_id.partner_shipping_id.street or ''\">1201 S Figueroa St</t>\n"
+"                                        <t t-out=\"object.sale_id.partner_shipping_id.city or ''\">Los Angeles</t>\n"
+"                                        <t t-out=\"object.sale_id.partner_shipping_id.state_id.name or ''\">California</t>\n"
+"                                        <t t-out=\"object.sale_id.partner_shipping_id.zip or ''\">90015</t>\n"
+"                                        <t t-out=\"object.sale_id.partner_shipping_id.country_id.name or ''\">United States</t>\n"
+"                                    </td>\n"
+"                                </tr>\n"
+"                            </table>\n"
+"                            <table t-if=\"hasattr(object.sale_id, 'carrier_id') and object.sale_id.carrier_id\" width=\"100%\" style=\"color: #454748; font-size: 12px;\">\n"
+"                                <tr>\n"
+"                                    <td>\n"
+"                                        <span style=\"font-weight:bold;\">Shipping Method:</span>\n"
+"                                        <t t-out=\"object.sale_id.carrier_id.name or ''\"/>\n"
+"                                        <t t-if=\"object.sale_id.amount_delivery == 0.0\">\n"
+"                                            (Free)\n"
+"                                        </t>\n"
+"                                        <t t-else=\"\">\n"
+"                                            (<t t-out=\"format_amount(object.sale_id.amount_delivery, object.sale_id.currency_id) or ''\">$ 10.00</t>)\n"
+"                                        </t>\n"
+"                                    </td>\n"
+"                                </tr>\n"
+"                                <tr t-if=\"object.sale_id.carrier_id.carrier_description\">\n"
+"                                    <td>\n"
+"                                        <strong>Shipping Description:</strong>\n"
+"                                        <t t-out=\"object.sale_id.carrier_id.carrier_description\"/>\n"
+"                                    </td>\n"
+"                                </tr>\n"
+"                            </table>\n"
+"                        </div>\n"
+"                    </t>\n"
+"                </div>\n"
+"            </t>\n"
+"        "
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_scrap_product_selector
+msgid "<i class=\"fa fa-fw fa-lg fa-info-circle me-3\" title=\"Scrap Reason\"/>"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_picking_batch_gantt
+msgid "<i class=\"fa fa-long-arrow-right\" title=\"Arrow\"/>"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_picking_batch_form
+msgid "<span class=\"o_stat_text\">Split Batch Transfers</span>"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.view_drbb_inventory_stock_picking_form
+msgid "<span class=\"o_stat_text\">Split Transfers</span>"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_picking_batch_gantt
+msgid "<strong>Allocated Time —</strong>"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,help:drbb_inventory.field_stock_picking_type__batch_max_volume
+msgid ""
+"A transfer will not be automatically added to batches that will exceed this volume if the transfer is added to it.\n"
+"Leave this value as '0' if no volume limit."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__abc_class_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__abc_class_id
+msgid "ABC"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_location__partner_id
+msgid "Address"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.report,name:drbb_inventory.action_report_picking_all_batches_transfers
+msgid "All Batches/Transfers"
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-javascript
+#: code:addons/drbb_inventory/static/src/models/barcode_picking_model.js:0
+msgid "All the quality checks have been done"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_type__allow_customized_package_picking
+msgid "Allow Customized Package Picking"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__allowed_picking_ids
+msgid "Allowed Picking"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__allowed_product_ids
+msgid "Allowed Product"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__allowed_quality_point_ids
+msgid "Allowed Quality Point"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_res_users__allowed_warehouse_ids
+msgid "Allowed Warehouses"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_product_multipart_amount
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_product_multipart_amount
+msgid "Amount of Part"
+msgstr "Aantal onderdelen"
+
+#. module: drbb_inventory
+#. odoo-javascript
+#: code:addons/drbb_inventory/static/src/components/main.js:0
+msgid "Another user is already assigned to this batch!."
+msgstr "Een andere gebruiker is reeds toegewezen aan deze batch!"
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/stock_picking_batch.py:0
+msgid ""
+"As there is no running contract during this period, this resource is not "
+"expected to work a shift. Planned hours:"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__assortment_year
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__assortment_year
+msgid "Assortment Year"
+msgstr "Assortimentsjaar"
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_attribute
+msgid "Attributes"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__availability_status
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__availability_status
+msgid "Availability Status"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__availability_status_char
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__availability_status_char
+msgid "Availability Status Char"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__available_in_store
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__available_in_store
+msgid "Available in Store"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__available_in_webshop
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__available_in_webshop
+msgid "Available in Webshop"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_location__avg_picking_time
+msgid "Average Picking Time (min)"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_base_unit_count
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_base_unit_count
+msgid "Base Unit Count"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,help:drbb_inventory.field_product_product__drbb_base_unit_count
+#: model:ir.model.fields,help:drbb_inventory.field_product_template__drbb_base_unit_count
+msgid "Base unit price for the product"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_planning_slot__drbb_stock_picking_batch_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__batch_id
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.report_all_batches_transfers
+msgid "Batch"
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/stock_picking_batch.py:0
+msgid "Batch Split"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_drbb_batch_split_wizard
+msgid "Batch Split Wizard"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_stock_picking_batch
+msgid "Batch Transfer"
+msgstr "Batchepicking"
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_picking_batch_pivot
+msgid "Batch Transfers"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_bom
+msgid "Bills of Materials"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_product_brand_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_product_brand_id
+msgid "Brand"
+msgstr "Merk"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_brand__name
+msgid "Brand Name"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__brand_type_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__brand_type_id
+msgid "Brand Type"
+msgstr "Type merk"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__cs_item_number
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__cs_item_number
+msgid "CS Item Number"
+msgstr "CS artikelnummer"
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.base_model_language_form
+msgid "Cancel"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_categories_main
+msgid "Categories"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__category_manager_ids
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__category_manager_ids
+msgid "Category Manager"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__category_supporter_ids
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__category_supporter_ids
+msgid "Category Supporter"
+msgstr "Category Ondersteuner"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__centrally_stocked
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__centrally_stocked
+msgid "Centrally stocked?"
+msgstr "Centraal gestockeerd?"
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_product_label_layout
+msgid "Choose the sheet layout to print the labels"
+msgstr "Kies de lay-out van het vel om de labels af te drukken"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_move__forecasted_qty_in_circuit
+msgid "Circuit Forecasted Quantity"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_quant__closest_circuit_location
+msgid "Closest Circuit Location"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_package_zone__code
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_category__code
+msgid "Code"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__collection
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__collection
+msgid "Collection"
+msgstr "Collectie"
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.quality_check_batch_on_demand_view_form
+msgid "Confirm"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__measure_on
+msgid "Control per"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_product_template_form_view
+msgid "Cost Price"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.actions.act_window,help:drbb_inventory.action_product_template
+msgid "Create a new product"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.actions.act_window,help:drbb_inventory.action_product_variants
+msgid "Create a new product variant"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_base_model_language__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_choose_pack_package__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_batch_split_wizard__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_group__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_tag__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_priority_rule__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_time_category__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_abc_class__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_brand__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_brand_type__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_inventory_section__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_role__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_status__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_type__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_language__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_quality_label__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_stage__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_promotion_exclude_label__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_promotion_website_label__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_stock_picking_label__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_package_zone__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__create_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_translation_term__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_base_model_language__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_choose_pack_package__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_batch_split_wizard__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_group__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_tag__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_priority_rule__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_time_category__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_abc_class__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_brand__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_brand_type__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_inventory_section__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_role__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_status__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_type__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_language__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_quality_label__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_stage__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_promotion_exclude_label__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_promotion_website_label__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_stock_picking_label__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_package_zone__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__create_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_translation_term__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_base_unit_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_base_unit_id
+msgid "Custom Unit of Measure"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_warehouse__is_dc_warehouse
+msgid "DC Warehouse"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_drbb_location_group
+msgid "DRBB Location Group"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_drbb_location_tag
+msgid "DRBB Location Tag"
+msgstr "DRBB Locatie Labels"
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_drbb_product_inventory_section
+msgid "DRBB Product Inventory Section"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_drbb_product_stage
+msgid "DRBB Product Stage"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_choose_pack_package
+msgid "Delivery Package Selection Wizard"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_priority_rule__description
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_time_category__description
+msgid "Description"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_quant_package__dest_location_barcode
+msgid "Destination Location Barcode"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_choose_pack_package__package_id
+msgid "Destination Package"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.choose_pack_package_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_batch_split_wizard_view_form
+msgid "Discard"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_discount_loyalty
+msgid "Discount & Loyalty"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_base_model_language__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_choose_pack_package__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_batch_split_wizard__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_group__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_tag__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_priority_rule__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_time_category__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_abc_class__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_brand__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_brand_type__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_inventory_section__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_role__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_status__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_type__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_language__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_quality_label__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_stage__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_promotion_exclude_label__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_promotion_website_label__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_stock_picking_label__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_package_zone__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__display_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_translation_term__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_base_unit_name
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_base_unit_name
+msgid "Drbb Base Unit Name"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_batch__estimated_picking_time
+msgid "Estimated Picking Time (min) based on category"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_batch__estimated_picking_time_location
+msgid "Estimated Picking Time (min) based on location"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_promotion_exclude_tag_ids_char
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_promotion_exclude_tag_ids_char
+msgid "Exclude from Promotion Char"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__expiration_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__expiration_date
+msgid "Expiration Date "
+msgstr "Houdbaarheidsdatum"
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_product_template_form_view
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.product_product_view_form_easy_inherit_drbb_inventory
+msgid "Extra Info"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,help:drbb_inventory.field_product_product__drbb_promotion_exclude_tag_ids
+#: model:ir.model.fields,help:drbb_inventory.field_product_template__drbb_promotion_exclude_tag_ids
+msgid ""
+"Field for internal use only! Check this tag, and make sure to include it in "
+"the domain filter of your promotion rules to include this product from "
+"promotions, discounts, or campaigns."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_base_model_language__field_ids
+#: model:ir.model.fields,field_description:drbb_inventory.field_translation_term__field_id
+msgid "Fields"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,help:drbb_inventory.field_product_product__drbb_product_multipart_amount
+#: model:ir.model.fields,help:drbb_inventory.field_product_template__drbb_product_multipart_amount
+msgid ""
+"Fill this if the product exists of multiple parts, but uses only one "
+"barcode. This can be used to filter and set a quality-check"
+msgstr ""
+"In te vullen als het product uit meerdere stukken bestaat maar met dezelfde "
+"barcode. Hier kun je op filteren om een quality-check op te baseren!"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_type__filter_by_zone
+msgid "Filter pickings by packaging zone"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_picking_priority_rule_view_form
+msgid "Filters"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_location__forecast_volume
+msgid "Forecasted Weight"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_label_layout__print_format
+msgid "Format"
+msgstr "Formatteer"
+
+#. module: drbb_inventory
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__res_partner__order_day__4
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__stock_picking_type__scheduled_day__fri
+msgid "Friday"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_move_view_list
+msgid "From"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.base_model_language_form
+msgid "Generate"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_model_language_form
+#: model:ir.ui.menu,name:drbb_inventory.generate_word_menu
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.base_model_language_form
+msgid "Generate Word"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_gift_ewallet
+msgid "Gift cards & eWallet"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.view_translation_line_filter
+msgid "Group By"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking__hide_header_footer_in_barcode
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_batch__hide_header_footer_in_barcode
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_type__hide_header_footer_in_barcode
+msgid "Hide Header & Footer in Barcode"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_base_model_language__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_choose_pack_package__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_batch_split_wizard__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_group__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_tag__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_priority_rule__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_time_category__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_abc_class__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_brand__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_brand_type__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_inventory_section__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_role__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_status__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_type__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_language__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_quality_label__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_stage__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_promotion_exclude_label__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_promotion_website_label__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_stock_picking_label__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_package_zone__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__id
+#: model:ir.model.fields,field_description:drbb_inventory.field_translation_term__id
+msgid "ID"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,help:drbb_inventory.field_quality_check_batch_on_demand__lot_id
+msgid ""
+"If you want to specify a lot/serial number before the transfer validation,"
+"                                    create a new lot here from this field "
+"with the same exact lot name of the move line you want to add a check for."
+"                                    If you want to create a check for all "
+"move lines, leave this field empty."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_promotion_exclude_tag_ids
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_promotion_exclude_tag_ids
+msgid "Include in Promotion"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,help:drbb_inventory.field_stock_warehouse__is_dc_warehouse
+msgid ""
+"Indicates whether this warehouse is designated as a distribution center "
+"(DC). If is_dc_warehouse is set to true, the system includes this "
+"warehouse’s stock levels when calculating giftlist item availability status "
+"(Green, Orange, or Red)"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__initial_forecasted_sales
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__initial_forecasted_sales
+msgid "Initial Forecasted Sales"
+msgstr "Initiële forecast verkoop"
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_base_language_install
+msgid "Install Language"
+msgstr "Taal installeren"
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_stock_location
+msgid "Inventory Locations"
+msgstr "Voorraadlocaties"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_product_inventory_section_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_product_inventory_section_id
+msgid "Inventory Section"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:mail.template,name:drbb_inventory.drbb_inventory_ready_to_pick_mail_template
+msgid "Inventory: Ready for Pick-up"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_location__is_circuit
+msgid "Is a Circuit Location"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__item_role_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__item_role_id
+msgid "Item Role"
+msgstr "Artikelrol"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__item_status_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__item_status_id
+msgid "Item Status"
+msgstr "Artikelstatus"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__item_status_char
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__item_status_char
+msgid "Item Status Char"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__kvi
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__kvi
+msgid "KVI"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking__stock_picking_label_ids
+msgid "Labels"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__product_language_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__product_language_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__language_id
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.view_translation_line_filter
+msgid "Language"
+msgstr "Taalcode product"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_translation_term__lang_id
+msgid "Languages"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_base_model_language__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_choose_pack_package__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_batch_split_wizard__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_group__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_tag__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_priority_rule__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_time_category__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_abc_class__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_brand__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_brand_type__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_inventory_section__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_role__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_status__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_type__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_language__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_quality_label__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_stage__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_promotion_exclude_label__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_promotion_website_label__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_stock_picking_label__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_package_zone__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__write_uid
+#: model:ir.model.fields,field_description:drbb_inventory.field_translation_term__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_base_model_language__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_choose_pack_package__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_batch_split_wizard__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_group__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_tag__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_priority_rule__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_time_category__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_abc_class__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_brand__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_brand_type__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_inventory_section__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_role__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_status__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_type__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_language__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_quality_label__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_stage__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_promotion_exclude_label__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_promotion_website_label__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_stock_picking_label__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_package_zone__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__write_date
+#: model:ir.model.fields,field_description:drbb_inventory.field_translation_term__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,help:drbb_inventory.field_res_users__allowed_warehouse_ids
+msgid "List of all warehouses user has access to"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_type__wave_group_by_location_group
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_location_group_view_form
+msgid "Location Group"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_location_group
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_location_group
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_location_group_view_list
+msgid "Location Groups"
+msgstr "Locatie Labels"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,help:drbb_inventory.field_stock_picking_type__wave_location_group_ids
+msgid "Location Groups to consider when grouping waves."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_location_tag
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_location_tags
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_location_tag_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_location_tag_view_list
+msgid "Location Tags"
+msgstr "Locatie Labels"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_group__location_ids
+msgid "Locations"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__lot_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_batch__lot_id
+msgid "Lot/Serial Number"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_production_lot
+msgid "Lots / Serial Numbers"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_loyalty_program
+msgid "Loyalty Program"
+msgstr "Loyaliteitsprogramma"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_batch_split_wizard__max_time
+msgid "Max Time (min)"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_storage_category__max_volume
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_storage_category_tree
+msgid "Max Volume"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.constraint,message:drbb_inventory.constraint_stock_storage_category_positive_max_volume
+msgid "Max volume should be a positive number."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_type__batch_max_volume
+msgid "Maximum volume"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,help:drbb_inventory.field_stock_storage_category__max_volume
+msgid "Maximum volume shippable in this packaging"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__medical_device
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__medical_device
+msgid "Medical device?"
+msgstr "Medisch hulpmiddel?"
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_stock_warehouse_orderpoint
+msgid "Minimum Inventory Rule"
+msgstr "Minimale voorraadregel"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_base_model_language__model_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__model_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_translation_term__model_id
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.view_translation_line_filter
+msgid "Models"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__res_partner__order_day__0
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__stock_picking_type__scheduled_day__mon
+msgid "Monday"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_quant_package__move_line_ids
+msgid "Move Lines in Package"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_product_multipart
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_product_multipart
+msgid "Multi-part product"
+msgstr "Product uit meerdere delen"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_group__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_location_tag__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_abc_class__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_brand_type__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_inventory_section__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_role__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_status__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_item_type__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_language__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_quality_label__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_stage__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_promotion_exclude_label__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_promotion_website_label__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_stock_picking_label__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_package_zone__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_category__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_translation_term__name
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_location_group_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_location_tag_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_picking_priority_rule_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_picking_time_category_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_abc_class_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_brand_type_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_inventory_section_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_item_role_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_item_status_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_item_type_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_language_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_quality_label_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_stage_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_promotion_exclude_label_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_promotion_website_label_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_stock_picking_label_view_form
+msgid "Name"
+msgstr "Naam"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_location__net_volume
+msgid "Net Weight"
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/wizard/base_language_install.py:0
+msgid "New Added Translation Term"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__product_template__expiration_date__no
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__product_template__kvi__no
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__product_template__medical_device__no
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__stock_picking_type__restrict_split_batch__no
+msgid "No"
+msgstr "Nee"
+
+#. module: drbb_inventory
+#: model_terms:ir.actions.act_window,help:drbb_inventory.action_translation_item
+#: model_terms:ir.actions.act_window,help:drbb_inventory.action_translation_term
+msgid "No translation has been created."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__on_item_number
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__on_item_number
+msgid "ON Item Number"
+msgstr "ON artikelnummer"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_translation_term__old_value
+msgid "Old Value"
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/stock_picking_batch.py:0
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.quality_check_batch_on_demand_view_form
+msgid "On-Demand Quality Check"
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/product_product.py:0
+msgid "Only select one warehouse as the DC warehouse in configurations."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,help:drbb_inventory.field_quality_check_batch_on_demand__measure_on
+msgid ""
+"Operation = One quality check is requested at the operation level.\n"
+"                  Product = A quality check is requested per product.\n"
+"                 Quantity = A quality check is requested for each new product quantity registered, with partial quantity checks also possible."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_res_partner__order_day
+#: model:ir.model.fields,field_description:drbb_inventory.field_res_users__order_day
+msgid "Order Day"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_translation_term__original
+msgid "Original Translated"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_others_main
+msgid "Others"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__pos_category_id
+msgid "POS Category"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__stock_picking_type__pick_pack_ship__pack
+msgid "Pack"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_type__wave_group_by_package
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.choose_pack_package_view_form
+msgid "Package"
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/stock_picking.py:0
+msgid "Package Details"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_package_zone
+#: model:ir.model.fields,field_description:drbb_inventory.field_res_users__package_zone_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_quant_package__package_zone_id
+msgid "Package Zone"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking__package_zone_ids
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.view_drbb_inventory_stock_picking_internal_search
+msgid "Package Zone(s)"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_stock_quant_package
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_package
+msgid "Packages"
+msgstr "Verpakkingen"
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.view_drbb_inventory_stock_picking_form
+msgid "Packaging Quantity"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_type__wave_group_by_location_group_parent
+msgid "Parent of the Location Group"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__stock_picking_type__pick_pack_ship__pick
+msgid "Pick"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_priority_rule__pick_to_clean
+#: model:ir.model.fields,field_description:drbb_inventory.field_loyalty_program__pick_to_clean
+msgid "Pick to Clean"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_type__pick_pack_ship
+msgid "Pick/Pack/Ship"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__picking_id
+msgid "Picking"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_inventory_stock_move
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_move_view_list
+msgid "Picking Lines"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_picking_management
+msgid "Picking Management"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_move__picking_weight
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_move_line__picking_weight
+msgid "Picking Prio Weight"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_picking_priority_rule
+#: model:ir.model,name:drbb_inventory.model_drbb_picking_priority_rule
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_picking_priority_rule
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_picking_priority_rule_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_picking_priority_rule_view_list
+msgid "Picking Priority Rule"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_priority_rule__name
+msgid "Picking Rule"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_move__picking_time
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_move_line__picking_time
+msgid "Picking Time (min) based on category"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_move__picking_time_location
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_move_line__picking_time_location
+msgid "Picking Time (min) based on location"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_picking_time_category
+#: model:ir.model,name:drbb_inventory.model_drbb_picking_time_category
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_time_category__name
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_picking_time_category_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_picking_time_category_id
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_picking_time_category
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_picking_time_category_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_picking_time_category_view_list
+msgid "Picking Time Category"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_stock_picking_type
+msgid "Picking Type"
+msgstr "Pickingsoort"
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_planning_slot
+msgid "Planning Shift"
+msgstr "Planning dienst"
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/product_product.py:0
+msgid "Please select a Warehouse as DC warehouse in configurations."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_products_pos_category
+msgid "PoS Product Categories"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_base_unit_price
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_base_unit_price
+msgid "Price Per Unit"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_pricelist_main
+msgid "Pricelists"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.product_pricelist_item_action
+msgid "Pricelists Items"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_priority_rule__picking_weight
+msgid "Prio Weight"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation__product_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__product_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_batch__product_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_batch__product_ids
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.view_translation_line_filter
+msgid "Product"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_drbb_product_abc_class
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_abc_class
+msgid "Product ABC Class"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_product_abc_class
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_abc_class_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_abc_class_view_list
+msgid "Product Abc Class"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__product_attrib_val_id
+msgid "Product Attribute Value"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__product_attrib_id
+msgid "Product Attributes"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_drbb_product_brand
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_brand_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_brand_view_list
+msgid "Product Brand"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_drbb_product_language
+msgid "Product Brand Language"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_product_brand_type
+#: model:ir.model,name:drbb_inventory.model_drbb_product_brand_type
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_brand_type
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_brand_type_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_brand_type_view_list
+msgid "Product Brand Type"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_product_brand
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_brand
+msgid "Product Brands"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_category
+msgid "Product Categories"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_product_category
+msgid "Product Category"
+msgstr "Productcategorie"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_priority_rule__product_category_ids
+msgid "Product Category(s)"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_product_inventory_section
+#: model:ir.ui.menu,name:drbb_inventory.menu_product_inventory_section
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_inventory_section_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_inventory_section_view_list
+msgid "Product Inventory Section"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_product_item_role
+#: model:ir.model,name:drbb_inventory.model_drbb_product_item_role
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_item_role
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_item_role_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_item_role_view_list
+msgid "Product Item Role"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_product_item_status
+#: model:ir.model,name:drbb_inventory.model_drbb_product_item_status
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_item_status
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_item_status_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_item_status_view_list
+msgid "Product Item Status"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_product_item_type
+#: model:ir.model,name:drbb_inventory.model_drbb_product_item_type
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_item_type
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_item_type_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_item_type_view_list
+msgid "Product Item Type"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.report,name:drbb_inventory.action_report_zpl_product_discount
+msgid "Product Label Discount"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_language
+msgid "Product Language"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_stock_move_line
+msgid "Product Moves (Stock Move Line)"
+msgstr "Productverplaatstingen (voorraadverplaatsingsregels)"
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_packaging_view
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_packagings
+msgid "Product Packagings"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_product_quality_label
+#: model:ir.model,name:drbb_inventory.model_drbb_product_quality_label
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_quality_label
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_quality_label_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_quality_label_view_list
+msgid "Product Quality Label"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_product_stage
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__product_stage_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__product_stage_id
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_stage_category
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_product_template_search_view
+msgid "Product Stage"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_stage_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_stage_view_list
+msgid "Product Stage Rule"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_product_template
+msgid "Product Template"
+msgstr "Product"
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_product_translation
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__product_translation_id
+msgid "Product Translation"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_product_translation_item
+msgid "Product Translation Line"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.root_product_translations_menu
+msgid "Product Translations"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_product_product
+msgid "Product Variant"
+msgstr "Productvariant"
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_product_variants
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product
+msgid "Product Variants"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_product_language
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_language_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_product_language_view_list
+msgid "Product language"
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/reports/zpl_product_discount_report.py:0
+msgid "Product model not defined, Please contact your administrator."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_product_template
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_template
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_products
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_products_sub
+msgid "Products"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_priority_rule__promotion
+msgid "Promotion"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_drbb_promotion_exclude_label
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_promotion_exclude_label
+msgid "Promotion Exclude Label"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_promotion_exclude_label
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_promotion_exclude_label_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_promotion_exclude_label_view_list
+msgid "Promotion Exclude Labels"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_product_template_form_view
+msgid "Promotion Info"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_promotion_website_tag_dutch
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_promotion_website_tag_dutch
+msgid "Promotion Tag Names in Dutch"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_promotion_website_tag_english
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_promotion_website_tag_english
+msgid "Promotion Tag Names in English"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_promotion_website_tag_french
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_promotion_website_tag_french
+msgid "Promotion Tag Names in French"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_drbb_promotion_website_label
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_promotion_website_label
+msgid "Promotion Website Label"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_drbb_promotion_website_label
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__drbb_promotion_website_tag_ids
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__drbb_promotion_website_tag_ids
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_promotion_website_label_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_promotion_website_label_view_list
+msgid "Promotion Website Labels"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__publisher
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__publisher
+msgid "Publisher"
+msgstr "Uitgeverij"
+
+#. module: drbb_inventory
+#: model:ir.actions.server,name:drbb_inventory.stock_picking_batch_action_quality_check_on_demand
+msgid "Quality Check"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__quality_point_id
+msgid "Quality Check Point"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__quality_labels_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__quality_labels_id
+msgid "Quality Labels"
+msgstr "Kwaliteitslabels"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__quality_labels_char
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__quality_labels_char
+msgid "Quality Labels Char"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_move_view_list
+msgid "Quantity"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_quant_package__qty_in_package
+msgid "Quantity in Package"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_stock_quant
+msgid "Quants"
+msgstr "Aantallen"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__recommended_retail_price
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__recommended_retail_price
+msgid "RRP"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_product_template_only_form_view
+msgid "Reference"
+msgstr "Artikelnummer"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_location__removal_prio
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking__removal_prio
+msgid "Removal Priority"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_report_drbb_inventory_report_zpl_product_discount
+msgid "Report ZPL Discount Label"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_translation_term__res_id
+msgid "Res ID"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_type__restrict_split_batch
+msgid "Restrict Batch Split?"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_type__role_id
+msgid "Role"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__sale_desc
+msgid "Sales Description"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_pricelist_sale
+msgid "Sales pricelist"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__res_partner__order_day__5
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__stock_picking_type__scheduled_day__sat
+msgid "Saturday"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.choose_pack_package_view_form
+msgid "Save"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_batch_split_wizard__scheduled_date
+msgid "Scheduled Date"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_batch_split_wizard__scheduled_date_part_two
+msgid "Scheduled Date Part 2"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_type__scheduled_day
+msgid "Scheduled Day"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_batch__scheduled_end_date
+msgid "Scheduled End Date"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_scrap_product_selector
+msgid "Scrap Reason"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.view_translation_line_filter
+msgid "Search Translations"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_view_picking_type_form
+msgid "Select location groups you want to group"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,help:drbb_inventory.field_product_product__drbb_promotion_website_tag_ids
+#: model:ir.model.fields,help:drbb_inventory.field_product_template__drbb_promotion_website_tag_ids
+msgid ""
+"Select one promotional label to display on the website for this product. "
+"Don’t forget to translate the label."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:mail.template,description:drbb_inventory.drbb_inventory_ready_to_pick_mail_template
+msgid "Sent to the customers when orders are ready to pickup"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_priority_rule__sequence
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_product_stage__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_products_settings
+msgid "Settings"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__stock_picking_type__pick_pack_ship__ship
+msgid "Ship"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_quality_check_batch_on_demand__show_lot_number
+msgid "Show Lot Number"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_batch__show_split_batch_transfer_action_button
+msgid "Show Split Batch Transfer Action Button"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking__show_split_transfer_action_button
+msgid "Show Split Transfer Action Button"
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-javascript
+#: code:addons/drbb_inventory/static/src/components/missing_moves_dialog.xml:0
+msgid ""
+"Some product lines were modified in the backend during this picking. If you "
+"continue, the transfer will be validated without these changes."
+msgstr ""
+"Tijdens deze picking werden productlijnen in de backend aangepast."
+" Als je doorgaat, wordt de transfer gevalideerd zonder deze lijnen"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_quant_package__source_location_barcode
+msgid "Source Location Barcode"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_priority_rule__source_sale_order
+msgid "Source in Sales Order"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_product_template_form_view
+msgid "Specify unit"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.server,name:drbb_inventory.drbb_inventory_picking_action_split_batch
+#: model:ir.actions.server,name:drbb_inventory.drbb_inventory_picking_batch_action_split_batch
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_batch_split_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_barcode_view_picking_type_form
+msgid "Split Batch"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_picking_batch_form
+msgid "Split Batch / Wave"
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/stock_picking_batch.py:0
+msgid "Split Batch Pickings"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_batch__split_source_picking_batch_id
+msgid "Split Source Batch Picking"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking__split_source_picking_id
+msgid "Split Source Transfer"
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/stock_picking.py:0
+msgid "Split Transfers"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,help:drbb_inventory.field_stock_picking_type__wave_group_by_location_group
+msgid ""
+"Split transfers by defined location groups, then group transfers with the "
+"same location group."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_stock_move
+msgid "Stock Move"
+msgstr "Voorraadverplaatsing"
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_drbb_stock_picking_label
+msgid "Stock Picking Label"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.drbb_stock_picking_label_action
+#: model:ir.ui.menu,name:drbb_inventory.drbb_location_tags_menu
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_stock_picking_label_view_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_stock_picking_label_view_list
+msgid "Stock Transfer Labels"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_stock_storage_category
+msgid "Storage Category"
+msgstr "Opslagcategorie"
+
+#. module: drbb_inventory
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__res_partner__order_day__6
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__stock_picking_type__scheduled_day__sun
+msgid "Sunday"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_location__location_tag_ids
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_view_location_search
+msgid "Tags"
+msgstr "Labels"
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/wizard/on_demand_quality_check_batch_wizard.py:0
+msgid "The selected lot/serial number does not exist in the picking."
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/wizard/drbb_batch_split_wizard.py:0
+msgid "The selected pickings should belong to an unique Responsible Person."
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/wizard/drbb_batch_split_wizard.py:0
+msgid "The selected pickings should belong to an unique company."
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/stock_picking.py:0
+msgid ""
+"There is nothing eligible to put in a pack. Either there are no quantities "
+"to put in a pack or all products are already in a pack."
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/stock_picking.py:0
+#: code:addons/drbb_inventory/models/stock_picking_batch.py:0
+msgid "There is nothing eligible to split in to another transfer."
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-javascript
+#: code:addons/drbb_inventory/static/src/models/barcode_picking_model.js:0
+msgid "There's no quality checks defined"
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/stock_picking_batch.py:0
+msgid "This Progress Bar is not implemented."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,help:drbb_inventory.field_product_product__recommended_retail_price
+#: model:ir.model.fields,help:drbb_inventory.field_product_template__recommended_retail_price
+msgid "This field contains the recommended retail price (RRP)"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__res_partner__order_day__3
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__stock_picking_type__scheduled_day__thu
+msgid "Thursday"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_drbb_picking_time_category__picking_time
+msgid "Time (in s)"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_move_view_list
+msgid "To"
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-javascript
+#: code:addons/drbb_inventory/static/src/models/barcode_picking_model.js:0
+msgid "To use packages, enable 'Packages' in the settings"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_move_view_list
+msgid "Total Demand"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_move_view_list
+msgid "Total Picking Prio Weight"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_move_view_list
+msgid "Total Picking Time"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking__total_products_in_sale
+msgid "Total Products in Sale"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking__total_products_in_transfers
+msgid "Total Products in Transfer"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_move_view_list
+msgid "Total Quantity"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,help:drbb_inventory.field_stock_picking__volume
+msgid "Total volume of the products in the picking."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_stock_picking
+msgid "Transfer"
+msgstr "Verplaatsing"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__value
+#: model:ir.model.fields,field_description:drbb_inventory.field_translation_term__value
+msgid "Translated Term"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.view_translation_item_form
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.view_translation_term_form
+msgid "Translation Item"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation__translation_ids
+msgid "Translation Lines"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_translation_term
+#: model:ir.model,name:drbb_inventory.model_translation_term
+msgid "Translation Term"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.actions.act_window,name:drbb_inventory.action_translation_item
+msgid "Translation items"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_translation_term
+msgid "Translations Term"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_base_model_language
+msgid "Translator Word Genrator"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__res_partner__order_day__1
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__stock_picking_type__scheduled_day__tue
+msgid "Tuesday"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__item_type_id
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__item_type_id
+msgid "Type of Item"
+msgstr "Artikelsoort"
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_product__item_type_char
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_template__item_type_char
+msgid "Type of Item Char"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_stock_move_view_list
+msgid "Unit"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_unit_measure
+msgid "Units of Measure"
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/product_template.py:0
+msgid ""
+"Updating the Recommended Retail Price will apply the new value to all "
+"variants."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_res_users
+msgid "User"
+msgstr "Gebruiker"
+
+#. module: drbb_inventory
+#: model:ir.ui.menu,name:drbb_inventory.menu_drbb_product_pricelist_purchase
+msgid "Vendor Pricelists"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_move__volume
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking__volume
+msgid "Volume"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_type__volume_uom_name
+msgid "Volume unit of measure label"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_stock_warehouse
+msgid "Warehouse"
+msgstr "Magazijn"
+
+#. module: drbb_inventory
+#. odoo-javascript
+#. odoo-python
+#: code:addons/drbb_inventory/models/product_template.py:0
+#: code:addons/drbb_inventory/static/src/components/main.js:0
+msgid "Warning"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_picking_type__wave_location_group_ids
+msgid "Wave Location Groups"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__web_desc
+msgid "Web description"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__res_partner__order_day__2
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__stock_picking_type__scheduled_day__wed
+msgid "Wednesday"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_storage_category__volume_uom_name
+msgid "Weight unit"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model,name:drbb_inventory.model_quality_check_batch_on_demand
+msgid "Wizard to select on-demand batch quality check points"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_stock_warehouse__is_xxl_warehouse
+msgid "XXL Warehouse"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__product_template__expiration_date__yes
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__product_template__kvi__yes
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__product_template__medical_device__yes
+#: model:ir.model.fields.selection,name:drbb_inventory.selection__stock_picking_type__restrict_split_batch__yes
+msgid "Yes"
+msgstr "Ja"
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/stock_picking_batch.py:0
+#: code:addons/drbb_inventory/wizard/on_demand_quality_check_batch_wizard.py:0
+msgid ""
+"You can not create quality check for a draft, done or cancelled transfer."
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/product_product.py:0
+#: code:addons/drbb_inventory/models/product_template.py:0
+msgid "You do not have the necessary permissions to create products."
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.actions.act_window,help:drbb_inventory.action_product_template
+msgid ""
+"You must define a product for everything you sell or purchase,\n"
+"                whether it's a storable product, a consumable or a service."
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.actions.act_window,help:drbb_inventory.action_product_variants
+msgid ""
+"You must define a product for everything you sell, whether it's a physical product,\n"
+"            a consumable or a service you offer to customers.\n"
+"            The product form contains information to simplify the sale process:\n"
+"            price, notes in the quotation, accounting data, procurement methods, etc."
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/models/stock_picking.py:0
+#: code:addons/drbb_inventory/models/stock_picking_batch.py:0
+msgid "You need to at least put in pack one item."
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__website_category_id
+msgid "eComm Category"
+msgstr ""
+
+#. module: drbb_inventory
+#: model:ir.model.fields,field_description:drbb_inventory.field_product_translation_item__stock_out_msg
+msgid "out-of-stock message"
+msgstr ""
+
+#. module: drbb_inventory
+#: model_terms:ir.ui.view,arch_db:drbb_inventory.drbb_inventory_product_template_form_view
+msgid "per"
+msgstr ""
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/reports/zpl_product_discount_report.py:0
+msgid "previous lowest price"
+msgstr "vorige laagste prijs"
+
+#. module: drbb_inventory
+#. odoo-python
+#: code:addons/drbb_inventory/reports/zpl_product_discount_report.py:0
+msgid "price per unit"
+msgstr "prijs per unit"
+
+#. module: drbb_inventory
+#: model:mail.template,subject:drbb_inventory.drbb_inventory_ready_to_pick_mail_template
+msgid ""
+"{{ object.sale_id.company_id.name }} Delivery Order (Ref {{ "
+"object.sale_id.name or 'n/a' }})"
+msgstr ""

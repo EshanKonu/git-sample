@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+        <record id="package_zone_a" model="package.zone">
+            <field name="code">a</field>
+            <field name="name">A</field>
+        </record>
+        <record id="package_zone_b" model="package.zone">
+            <field name="code">b</field>
+            <field name="name">B</field>
+        </record>
+        <record id="package_zone_c" model="package.zone">
+            <field name="code">c</field>
+            <field name="name">C</field>
+        </record>
+        <record id="package_zone_d" model="package.zone">
+            <field name="code">d</field>
+            <field name="name">D</field>
+        </record>
+        <record id="package_zone_e" model="package.zone">
+            <field name="code">e</field>
+            <field name="name">E</field>
+        </record>
+        <record id="package_zone_f" model="package.zone">
+            <field name="code">f</field>
+            <field name="name">F</field>
+        </record>
+        <record id="package_zone_g" model="package.zone">
+            <field name="code">g</field>
+            <field name="name">G</field>
+        </record>
+        <record id="package_zone_h" model="package.zone">
+            <field name="code">h</field>
+            <field name="name">H</field>
+        </record>
+        <record id="package_zone_i" model="package.zone">
+            <field name="code">i</field>
+            <field name="name">I</field>
+        </record>
+        <record id="package_zone_j" model="package.zone">
+            <field name="code">j</field>
+            <field name="name">J</field>
+        </record>
+        <record id="package_zone_k" model="package.zone">
+            <field name="code">k</field>
+            <field name="name">K</field>
+        </record>
+        <record id="package_zone_l" model="package.zone">
+            <field name="code">l</field>
+            <field name="name">L</field>
+        </record>
+        <record id="package_zone_m" model="package.zone">
+            <field name="code">m</field>
+            <field name="name">M</field>
+        </record>
+        <record id="package_zone_n" model="package.zone">
+            <field name="code">n</field>
+            <field name="name">N</field>
+        </record>
+        <record id="package_zone_o" model="package.zone">
+            <field name="code">o</field>
+            <field name="name">O</field>
+        </record>
+        <record id="package_zone_p" model="package.zone">
+            <field name="code">p</field>
+            <field name="name">P</field>
+        </record>
+        <record id="package_zone_q" model="package.zone">
+            <field name="code">q</field>
+            <field name="name">Q</field>
+        </record>
+        <record id="package_zone_r" model="package.zone">
+            <field name="code">r</field>
+            <field name="name">R</field>
+        </record>
+        <record id="package_zone_s" model="package.zone">
+            <field name="code">s</field>
+            <field name="name">S</field>
+        </record>
+        <record id="package_zone_t" model="package.zone">
+            <field name="code">t</field>
+            <field name="name">T</field>
+        </record>
+        <record id="package_zone_u" model="package.zone">
+            <field name="code">u</field>
+            <field name="name">U</field>
+        </record>
+        <record id="package_zone_v" model="package.zone">
+            <field name="code">v</field>
+            <field name="name">V</field>
+        </record>
+        <record id="package_zone_w" model="package.zone">
+            <field name="code">w</field>
+            <field name="name">W</field>
+        </record>
+        <record id="package_zone_x" model="package.zone">
+            <field name="code">x</field>
+            <field name="name">X</field>
+        </record>
+        <record id="package_zone_y" model="package.zone">
+            <field name="code">y</field>
+            <field name="name">Y</field>
+        </record>
+        <record id="package_zone_z" model="package.zone">
+            <field name="code">z</field>
+            <field name="name">Z</field>
+        </record>
+</odoo>

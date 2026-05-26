@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="drbb_inventory_stock_quant_barcode_kanban" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.barcode.quant.kanban</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock_barcode.stock_quant_barcode_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[field[@name='quantity']]" position="after">
+                <field name="closest_circuit_location"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

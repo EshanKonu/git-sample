@@ -1,0 +1,12 @@
+<odoo>
+    <record id="drbb_inventory_loyalty_program_view_form" model="ir.ui.view">
+        <field name="name">drbb.inventory.loyalty.program.view.form</field>
+        <field name="model">loyalty.program</field>
+        <field name="inherit_id" ref="loyalty.loyalty_program_view_form"/>
+        <field name="arch" type="xml">
+             <xpath expr="//label[@for='limit_usage']" position="before">
+                <field name="pick_to_clean"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="drbb_batch_split_wizard_view_form" model="ir.ui.view">
+        <field name="name">drbb.batch.split.wizard.view.form</field>
+        <field name="model">drbb.batch.split.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="max_time"/>
+                        <field name="scheduled_date"/>
+                        <field name="scheduled_date_part_two"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="split_batch" string="Split Batch" type="object" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

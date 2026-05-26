@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="drbb_inventory.report_all_batches_transfers">
+            <t t-call="web.basic_layout">
+                <t t-set='nRows' t-value='4'/>
+                <t t-set='nCols' t-value='1'/>
+                <div class="oe_structure"></div>
+
+                <div t-foreach="[docs[x:x + nRows * nCols] for x in range(0, len(docs), nRows * nCols)]"
+                     t-as="page_docs" class="o_label_sheet" t-att-style="'padding: 10mm 5mm'">
+                    <table class="my-0 table table-sm table-borderless">
+                        <t t-foreach="range(nRows)" t-as="row">
+                            <tr>
+                                <t t-foreach="range(nCols)" t-as="col">
+                                    <t t-set="barcode_index" t-value="(row * nCols + col)"/>
+                                    <t t-if="barcode_index &lt; len(page_docs)">
+                                        <t t-set="o" t-value="page_docs[barcode_index]"/>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-set="o" t-value="page_docs[0]"/>
+                                    </t>
+
+                                    <td t-att-style="'vertical-align: top;' + (barcode_index &gt;= len(page_docs) and 'visibility:hidden' or '')">
+                                        <div t-att-style="'position:relative; width:90mm; height:25mm; border: 1px solid black; padding: 5px;'">
+                                            <table style="width: 100%; height: 100%;">
+                                                <tr>
+                                                    <td style="width: 50%; vertical-align: top; text-align: left;">
+                                                        <h6 style="margin: 0; font-size: 16px; line-height: 1.2;">
+                                                            <t t-esc="o.name"/>
+                                                        </h6>
+                                                        <h6 style="margin: 0; font-size: 12px; line-height: 1.2;">
+                                                            <t t-esc="o.picking_type_id.name"/>
+                                                        </h6>
+                                                    </td>
+                                                    <td style="width: 50%; vertical-align: top; text-align: right;">
+                                                        <span t-field="o.name" t-options="{'widget': 'barcode', 'width': 600, 'height': 150, 'img_style': 'width:200px;height:45px;'}">
+                                                            Batch
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <br/>
+                                        <br/>
+                                    </td>
+                                </t>
+                            </tr>
+                        </t>
+                    </table>
+                    <div class="oe_structure"></div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

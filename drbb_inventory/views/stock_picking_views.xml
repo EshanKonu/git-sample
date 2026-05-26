@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_drbb_inventory_stock_picking_form" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <field name="origin" position="after">
+                <field name="package_zone_ids" widget="many2many_tags"/>
+                <field name="stock_picking_label_ids" widget="many2many_tags"/>
+            </field>
+            <field name="product_packaging_id" position="after">
+                <field name="product_packaging_qty" string="Packaging Quantity" optional="hide"/>
+            </field>
+            <field name="product_packaging_id" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+            <field name="location_final_id" position="before">
+                <field name="ilp_checkbox" optional="hide"/>
+                <field name="product_barcode" optional="hide"/>
+            </field>
+            <xpath expr="//button[@name='action_next_transfer']" position="after">
+                <field name="show_split_transfer_action_button" invisible="1"/>
+                <button name="action_show_split_pickings" class="oe_stat_button" icon="fa-list" type="object" invisible="not show_split_transfer_action_button">
+                    <div class="o_form_field o_stat_info">
+                        <span class="o_stat_text">Split Transfers</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_drbb_inventory_stock_picking_vpicktree" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.picking.tree</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <field name="origin" position="after">
+                <field name="package_zone_ids" widget="many2many_tags" optional="show"/>
+                <field name="activity_ids" widget="list_activity" optional="hide"/>
+                <field name="total_products_in_sale"/>
+            </field>
+            <field name="state" position="after">
+                <field name="total_products_in_transfers"/>
+                <field name="stock_picking_label_ids" widget="many2many_tags"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_drbb_inventory_stock_picking_internal_search" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.picking.internal.search</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <field name="picking_type_id" position="after">
+                <field name="package_zone_ids"/>
+            </field>
+            <filter name="picking_type" position="after">
+                <filter string="Package Zone(s)" name="group_package_zone_ids" domain="[]"
+                        context="{'group_by': 'package_zone_ids'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="view_drbb_inventory_stock_picking_batch_internal_search" model="ir.ui.view">
+        <field name="name">drbb.inventory.stock.picking.search</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock_picking_batch.view_picking_internal_search_inherit_stock_picking_batch"/>
+        <field name="arch" type="xml">
+            <field name="batch_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="name" position="before">
+                <field name="batch_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="drbb_inventory_picking_action_split_batch" model="ir.actions.server"> <!-- Menu + python -->
+        <field name="name">Split Batch</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="state">code</field>
+        <field name="code">
+for record in records:
+    action = record.action_split_batch()
+        </field>
+    </record>
+</odoo>
